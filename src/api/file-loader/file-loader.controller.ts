@@ -157,36 +157,4 @@ export class FileLoaderController {
     }
 
 
-    @UseGuards(AuthGuard('jwt'))
-    @Get('/dockets/:docketID')
-    async loadDocketById(@Req() req, @Res() res, @Param('docketID') docketID: string): Promise<any> {
-        const docket = await this.docketService.findById(docketID);
-        let filePath;
-        await fs.readdir(`./uploads/${req.user.id}/`, async (err, files) => {
-            if (err) {
-                console.log("error at file search")
-            }
-            if (files) {
-                console.log("found some files")
-                for (const file of files) {
-                    const fileName = docket.filePath.split('/')[docket.filePath.split('/').length -1];
-                    if (file === fileName) {
-                        console.log("searched imagename found");
-                        filePath = this.baseDir + docket.filePath.slice(1, docket.filePath.length);
-                        const stat = fs.statSync(filePath);
-                        const readStream = fs.createReadStream(filePath);
-
-                        res.writeHead(200, {
-                            'Content-Type': 'application/pdf',
-                            'Content-Disposition': 'attachment; filename=quote.pdf',
-                            'Content-Length': stat.size
-                        });
-                        readStream.pipe(res);
-                    }
-                }
-            }
-        });
-
-    }
-
 }

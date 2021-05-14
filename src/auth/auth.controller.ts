@@ -13,9 +13,7 @@ import {CreateAppUserDto, CreateB2BUserDto, IResponse, IToken} from "./interface
 
 export interface IAuthController {
 
-    registerAppUser(res, createUserDto: CreateAppUserDto): Promise<any>;
-
-    registerB2bUser(res, createUserDto: CreateB2BUserDto): Promise<any>;
+    registerUser(res, createUserDto: CreateAppUserDto | CreateB2BUserDto): Promise<any>;
 
     login(res, login: { username: string, password: string }): Promise<any>;
 
@@ -34,18 +32,12 @@ export class AuthController implements IAuthController {
     ) {
     }
 
-    @Post('/app/register')
-    public async registerAppUser(@Res() res, @Body() createUserDto: CreateAppUserDto): Promise<any> {
-        await this.authService.registerAppUser(createUserDto).then(result => {
-            return res.status(HttpStatus.OK).json(result);
-        });
-    }
+    @Post('/register')
+    public async registerUser(@Res() res, @Body() createUserDto: CreateAppUserDto | CreateB2BUserDto): Promise<any> {
+        const result = await this.authService.registerUser(createUserDto);
+        return res.status(HttpStatus.OK).json(result);
 
-    @Post('b2b/register')
-    public async registerB2bUser(@Res() res, @Body() createUserDto: CreateB2BUserDto): Promise<any> {
-        await this.authService.registerB2bUser(createUserDto).then(result => {
-            return res.status(HttpStatus.OK).json(result);
-        });
+
     }
 
     @Post('login')
@@ -53,15 +45,15 @@ export class AuthController implements IAuthController {
         const result = await this.authService.validateUserWithUsernameAndPassword(login.username, login.password);
         if (result.success) {
             const user: UserDocument = result.data;
-            passport.serializeUser(function (user: UserDocument, done) {
-                done(null, user._id);
-            });
+            // passport.serializeUser(function (user: UserDocument, done) {
+            //     done(null, user._id);
+            // });
             const token = this.authService.createToken(user);
             result.data = token;
             res.cookie('accessToken', token, {maxAge: 360000, httpOnly: true, secure: true});
             return res.status(HttpStatus.OK).json(result);
         } else {
-            return  res.status(HttpStatus.OK).json(result);
+            return res.status(HttpStatus.OK).json(result);
         }
 
 
@@ -77,7 +69,6 @@ export class AuthController implements IAuthController {
     @Get('/:user/:code')
     async verifyAccount(@Param('user') userID: string, @Param('code') code: string, @Res() res) {
         const result = await this.authService.verifyAccount(userID, code);
-        await this.authService.createDefaultDocumentsForUser(userID);
         return res.status(HttpStatus.OK).json(result);
     }
 

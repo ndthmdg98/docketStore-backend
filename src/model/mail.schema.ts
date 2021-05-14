@@ -6,40 +6,23 @@ import {ApiProperty} from "@nestjs/swagger";
 export class MailVerificationDto {
 
     @ApiProperty()
-    readonly receiver: UserDocument;
-
+    readonly receiverId: string;
     @ApiProperty()
     readonly code: string;
-
     @ApiProperty()
     readonly dateCreated: Date;
 
-
-
 }
-
 export type MailDocument = Mail & Document;
 
-
-export interface IMail {
-    code: string;
-    receiver: User;
-    dateCreated: Date;
-}
-
-
 @Schema()
-export class Mail implements IMail {
-    @Prop({type: UserSchema})
-    receiver: UserDocument;
-
+export class Mail {
+    @Prop()
+    receiverId: string;
     @Prop()
     code: string;
-
     @Prop()
     dateCreated: Date;
-
-
 }
 
 export const MailSchema = SchemaFactory.createForClass(Mail);

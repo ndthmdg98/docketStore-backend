@@ -1,58 +1,39 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 
 import {Model} from "mongoose";
 import {debug} from "console";
 import {InjectModel} from "@nestjs/mongoose";
 import {MailerService} from "@nestjs-modules/mailer";
-import {User, UserDocument} from "../../model/user.schema";
 import {Mail, MailDocument, MailVerificationDto} from "../../model/mail.schema";
-import {Config} from "../../shared/config";
-
-
-export interface IMailService<T> {
-    findAll(): Promise<MailDocument[]>;
-
-    findById(ID: string): Promise<MailDocument>;
-
-    findOne(options: object): Promise<MailDocument>;
-
-    create(mailVerificationDto: MailVerificationDto): Promise<boolean>;
-
-    update(ID: string, newValue: Mail): Promise<MailDocument>;
-
-    delete(ID: string): Promise<MailDocument>;
-
-    sendWelcomeEmail(user: UserDocument, code: string): Promise<any>;
-
-    generateCode(length: number): string;
-}
+import {AppConfig} from "../../app-config.module";
 
 @Injectable()
-export class MailService implements IMailService<UserDocument> {
+export class MailService {
 
-    private readonly baseUrlAuth = Config.baseUrl + '/auth';
+    private readonly baseUrlAuth = this.APP_CONFIG.baseUrl + '/auth';
 
 
     constructor(
         @InjectModel('Mail') private readonly mailModel: Model<MailDocument>,
+        @Inject('APP_CONFIG') private readonly APP_CONFIG: AppConfig,
         private readonly mailerService: MailerService,
     ) {
 
     }
 
 
-    async sendWelcomeEmail(receiver: UserDocument, code: string): Promise<boolean> {
+    async sendWelcomeEmail(receiverId: string, receiverMail: string, receiverFirstName,  code: string): Promise<boolean> {
         let success = true;
-        const url = `${this.baseUrlAuth}/${receiver._id}/${code}/`
+        const url = `${this.baseUrlAuth}/${receiverId}/${code}/`
         await this.mailerService.sendMail({
             subject: `Welcome to docketStore! Please Confirm Your Email Address`,
-            to: receiver.username,
+            to: receiverMail,
             from: 'service@ndfnb.de',
             date: new Date(),
             template: 'confirmation',
             context: {
                 url: url,
-                firstName: receiver.contact.firstName
+                firstName: receiverFirstName
             },
             html: url
         }).then(() => {
@@ -78,10 +59,9 @@ export class MailService implements IMailService<UserDocument> {
         return await this.mailModel.findById(ID).exec();
     }
 
-    async create(mailVerificationDto: MailVerificationDto): Promise<boolean> {
+    async create(mailVerificationDto: MailVerificationDto): Promise<MailDocument> {
         const createdMailVerification = new this.mailModel(mailVerificationDto);
-        await createdMailVerification.save();
-        return await this.sendWelcomeEmail(mailVerificationDto.receiver, mailVerificationDto.code);
+        return await createdMailVerification.save();
     }
 
     async update(ID: string, newValue: MailDocument): Promise<MailDocument> {

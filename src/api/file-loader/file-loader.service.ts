@@ -10,6 +10,8 @@ import {FileInterceptor} from "@nestjs/platform-express";
 import {extname} from "path";
 import {diskStorage} from 'multer';
 import {DocketService} from "../docket/docket.service";
+import * as fs from "fs";
+import {DocketFile} from "../../model/docket.schema";
 
 
 export const imageFileFilter = (req, file, callback) => {
@@ -59,19 +61,7 @@ export class FileLoaderService {
 
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @UseInterceptors(
-        FileInterceptor('file', {
-            storage: diskStorage({
-                destination: './uploads/dockets',
-                filename: editFileName,
-            }),
-            fileFilter: fileFilter,
-        }),
-    )
-    async uploadDocket(docketID: string, @UploadedFile() file): Promise<any> {
-        return await this.docketService.updateById(docketID, {filePath: file.filename});
-    }
+
 
 
 }

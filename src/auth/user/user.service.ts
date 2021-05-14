@@ -6,33 +6,65 @@ import {User, UserDocument} from "../../model/user.schema";
 import {CreateAppUserDto, CreateB2BUserDto} from "../interfaces";
 import {TagService} from "../../api/tag/tag.service";
 
-export interface IUserService{
-    create(createObjectDto: CreateAppUserDto | CreateB2BUserDto): Promise<User | null>;
+export interface IUserService {
+    createUser(userToCreate: CreateAppUserDto | CreateB2BUserDto): Promise<UserDocument>;
 
     findAll(req, res): Promise<User[]>;
+
     findById(id: string): Promise<User | null>;
+
     findOne(options: object): Promise<User[] | User | null>;
 
     updateByID(id: string, valuesUseroChange: object): Promise<User | null>;
+
     updateOne(findUserOptions: object, valuesUseroChange: object): Promise<User | null>;
 
-    deleteAll( req, res): Promise<any>;
+    deleteAll(req, res): Promise<any>;
+
     deleteByID(id: string): Promise<any>;
+
     deleteOne(options: object): Promise<any>;
 }
 
 
-
 @Injectable()
-export class UserService implements IUserService{
-    constructor(@InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>) {
+export class UserService implements IUserService {
+    constructor(@InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>, private tagService: TagService) {
 
     }
 
-    async create(userToCreate: CreateAppUserDto | CreateB2BUserDto): Promise<UserDocument> {
-        const createdUserDocument = new this.userModel(userToCreate);
-        return await createdUserDocument.save();
+    async createUser(userToCreate: CreateB2BUserDto | CreateAppUserDto): Promise<UserDocument> {
+        if (CreateB2BUserDto.instanceOf(userToCreate)) {
+            const user = await this.userModel.register(new this.userModel(
+                {
+                    username: userToCreate.username,
+                    email: userToCreate.username,
+                    contact: userToCreate.contact,
+                    company: userToCreate.company,
+                    status: "pending",
+                    roles: ['b2b_user'],
+                    lastLogin: new Date()
+                }), userToCreate.password);
+            return user;
+        } else {
+            const user = await this.userModel.register(new this.userModel(
+                {
+                    username: userToCreate.username,
+                    email: userToCreate.username,
+                    contact: userToCreate.contact,
+                    status: "pending",
+                    roles: ['app_user'],
+                    // @ts-ignore
+                    lastLogin: new Date()
+                }), userToCreate.password);
+
+            await this.tagService.createStandardTags(user._id);
+            return user;
+        }
     }
+
+
+
 
     async findAll(): Promise<UserDocument[]> {
         return await this.userModel.find().exec();
@@ -45,7 +77,6 @@ export class UserService implements IUserService{
     async findById(id: string): Promise<UserDocument> {
         return await this.userModel.findById(id).exec();
     }
-
 
 
     async updateOne(findUserDocumentOptions: object, valuesToChange: object): Promise<UserDocument | null> {

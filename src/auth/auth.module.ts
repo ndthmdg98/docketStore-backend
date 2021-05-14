@@ -1,4 +1,5 @@
 import {
+    Inject,
     Module,
 } from '@nestjs/common';
 
@@ -13,13 +14,27 @@ import {AuthService} from "./auth.service";
 import {AuthController} from "./auth.controller";
 import {UserModule} from "./user/user.module";
 import {MulterModule} from "@nestjs/platform-express";
-import {JwtConfig} from "../shared/config";
 import {TagSchema} from "../model/tag.schema";
 import {TagService} from "../api/tag/tag.service";
 import {TagModule} from "../api/tag/tag.module";
 
+
+export const JWT_DI_CONFIG: JwtConfig = {
+    jwtSecret: "ILovePokemon",
+    expiresIn: "1h"
+};
+
+
+export class JwtConfig {
+    jwtSecret: string;
+    expiresIn: string;
+}
+
+
+
+
 @Module({
-    imports: [MongooseModule.forFeature([{ name: 'Users', schema: UserSchema }]),
+    imports: [MongooseModule.forFeature([{name: 'Users', schema: UserSchema}]),
         MongooseModule.forFeature([{name: 'Tags', schema: TagSchema}]),
         TagModule,
         PassportModule,
@@ -27,20 +42,31 @@ import {TagModule} from "../api/tag/tag.module";
             dest: './uploads',
         }),
         JwtModule.register({
-            secret: JwtConfig.jwtSecret,
-            signOptions: {expiresIn: '1h'},
+            secret: JWT_DI_CONFIG.jwtSecret,
+            signOptions: {expiresIn: JWT_DI_CONFIG.expiresIn},
         }),
         MailModule,
         UserModule
     ],
     controllers: [AuthController],
-    providers: [AuthService, LocalStrategy, JwtStrategy, TagService],
+    providers: [
+        AuthService,
+        LocalStrategy,
+        JwtStrategy,
+        TagService,
+        {
+            provide: 'JWT_CONFIG',
+            useValue: JWT_DI_CONFIG
+        }
+    ],
     exports: [
         AuthService,
-        MongooseModule.forFeature([{ name: 'Users', schema: UserSchema }]),
+        MongooseModule.forFeature([{name: 'Users', schema: UserSchema}]),
         MongooseModule.forFeature([{name: 'Tags', schema: TagSchema}])
     ],
 
 })
 export class AuthModule {
+    constructor() {
+    }
 }

@@ -5,11 +5,17 @@ import {DocketSchema} from "../../model/docket.schema";
 import {UserModule} from "../../auth/user/user.module";
 import {DocketService} from "./docket.service";
 import {FileLoaderService} from "../file-loader/file-loader.service";
+import {TagService} from "../tag/tag.service";
+import {TagSchema} from "../../model/tag.schema";
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: 'Dockets', schema: DocketSchema }]), UserModule],
+    imports: [
+        MongooseModule.forFeature([{ name: 'Dockets', schema: DocketSchema }]),
+        MongooseModule.forFeature([{ name: 'Tags', schema: TagSchema }]),
+        UserModule
+    ],
     controllers: [DocketController],
-    providers: [DocketService, FileLoaderService],
+    providers: [DocketService, FileLoaderService, TagService],
     exports: [DocketService],
 })
 export class DocketModule {}

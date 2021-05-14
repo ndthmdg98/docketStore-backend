@@ -1,5 +1,5 @@
 import {Body, Controller, Get, HttpStatus, Param, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
-import {Tag} from "../../model/tag.schema";
+import {Tag, TagViewModel} from "../../model/tag.schema";
 import {TagService} from "./tag.service";
 import {AuthGuard} from "@nestjs/passport";
 import {Role, Roles} from "../../common/decorators/roles.decorator";
@@ -11,11 +11,8 @@ import {IResponse} from "../../auth/interfaces";
 export interface ITagController {
 
     create(req, res, file, createObjectDto: CreateTagDto): Promise<any>;
-
     updateById(req, res, id: string, valuesToChange: object): Promise<any>;
-
     findAllByUser(req, res): Promise<any[]>;
-
     findById(req, res, id: string): Promise<any>;
 
 }
@@ -30,14 +27,15 @@ export class TagController implements ITagController {
 
     @Roles(Role.APP_USER)
     @Post()
-    async create(@Req() req, @Res() res, file, @Body() createObjectDto: CreateTagDto): Promise<any> {
-        await this.tagService.create(createObjectDto, req.user).then(tag => {
+    async create(@Req() req, @Res() res, @Body() tagName: CreateTagDto): Promise<any> {
+        const createTagDto: CreateTagDto = {userId: req.user._id, tagName: tagName.tagName};
+        await this.tagService.create(createTagDto).then(tag => {
             return res.status(HttpStatus.OK).json(tag);
         })
     }
 
     @Roles(Role.APP_USER)
-    @Get('all')
+    @Get()
     async findAllByUser(@Req() req, @Res() res): Promise<any> {
         const result: IResponse = {
             status: HttpStatus.OK,
@@ -45,8 +43,13 @@ export class TagController implements ITagController {
             data: {}
         }
         const tags = await this.tagService.findAllByUser(req.user);
+        const tagViewModels: TagViewModel[] = []
+        tags.forEach(tag => {
+            tagViewModels.push(tag.toViewModel())
+        })
+
         result.success = true;
-        result.data = tags;
+        result.data = tagViewModels;
         return res.status(HttpStatus.OK).json(result);
     }
 

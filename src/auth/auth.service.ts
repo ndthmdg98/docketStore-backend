@@ -1,46 +1,39 @@
-import {HttpStatus, Injectable} from '@nestjs/common';
+import {HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {AuthenticationResult, PassportLocalModel, Schema} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
-import {debug} from 'console';
 import * as jwt from "jsonwebtoken";
 import {MailService} from "./mail/mail.service";
 import {UserService} from "./user/user.service";
-import {IContactInformation, IUser, User, UserDocument} from "../model/user.schema";
+import {User, UserDocument} from "../model/user.schema";
 import {MailVerificationDto} from "../model/mail.schema";
-import {JwtConfig} from "../shared/config";
 import {CreateAppUserDto, CreateB2BUserDto, IResponse, IToken, JwtPayloadInterface} from "./interfaces";
 import {TagService} from "../api/tag/tag.service";
-import * as fs from "fs";
+import {JwtConfig} from "./auth.module";
 
 
 export interface IAuthService {
-    registerB2bUser(userToRegister: CreateB2BUserDto): Promise<IResponse>;
-
-    registerAppUser(userToRegister: CreateAppUserDto): Promise<IResponse>;
+    registerUser(userToRegister: CreateAppUserDto | CreateB2BUserDto): Promise<IResponse>;
 
     validateUser(payload: JwtPayloadInterface): Promise<User>;
 
     validateUserWithUsernameAndPassword(username: string, pass: string): Promise<IResponse>;
 
     verifyAccount(userID: string, code: string): Promise<IResponse>;
-
-
 }
 
 @Injectable()
 export class AuthService implements IAuthService {
-
 
     constructor(
         private readonly mailService: MailService,
         private readonly userService: UserService,
         private readonly tagService: TagService,
         @InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>,
+        @Inject("JWT_CONFIG") private readonly JWT_CONFIG: JwtConfig
     ) {
-
     }
 
-    async registerAppUser(userToRegister: CreateAppUserDto): Promise<IResponse> {
+    async registerUser(userToRegister: CreateAppUserDto | CreateB2BUserDto): Promise<IResponse> {
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
@@ -50,67 +43,42 @@ export class AuthService implements IAuthService {
         if (user) {
             result.status = HttpStatus.BAD_REQUEST
             result.data.message = "User with given e-mail already registered";
+            return result;
         } else {
-            const user = await this.userModel.register(new this.userModel(
-                {
-                    username: userToRegister.username,
-                    email: userToRegister.username,
-                    contact: userToRegister.contact,
-                    status: "pending",
-                    roles: ['app_user'],
-                    // @ts-ignore
-                    lastLogin: new Date()
-                }), userToRegister.password);
+            const user = await this.userService.createUser(userToRegister);
             if (user.errors) {
-                result.data.message = user.errors;
+                result.data.message = "User could not be created!";
+                result.status = HttpStatus.INTERNAL_SERVER_ERROR
+                return result;
             } else if (user) {
                 const created_user = await this.userService.findById(user.id);
                 let mailVerificationDto: MailVerificationDto = {
-                    receiver: created_user,
+                    receiverId: created_user._id,
                     code: this.mailService.generateCode(10),
                     dateCreated: new Date()
                 };
-                result.success = await this.mailService.create(mailVerificationDto);
-                result.data.message = "User successfully created!"
-            }
-        }
-        return result;
-    }
+                const mailVerification = await this.mailService.create(mailVerificationDto);
+                if (mailVerification.errors) {
+                    result.data.message = "Mail verification could not be created!";
+                    result.status = HttpStatus.INTERNAL_SERVER_ERROR
+                    return result;
+                } else if (mailVerification) {
+                    const sentMail = await this.mailService.sendWelcomeEmail(user._id, user.username, user.contact.firstName, mailVerificationDto.code);
+                    if (sentMail) {
+                        result.data.message = "User successfully created! Please check your Mails"
+                        result.success = true;
+                        return result;
+                    } else {
+                        result.data.message = "Mail could not successfully sent!"
+                        result.success = false;
+                        return result;
+                    }
+                } else {
 
-    async registerB2bUser(userToRegister: CreateB2BUserDto): Promise<IResponse> {
-        const result: IResponse = {
-            status: HttpStatus.OK,
-            success: false,
-            data: {message: ""}
-        }
-        const user = await this.userService.findOne({email: userToRegister.username});
-        if (user) {
-            result.data.message = "User with given e-mail already registered";
-        } else {
-            const user = await this.userModel.register(new this.userModel(
-                {
-                    username: userToRegister.username,
-                    email: userToRegister.username,
-                    contact: userToRegister.contact,
-                    company: userToRegister.company,
-                    status: "pending",
-                    roles: ['b2b_user'],
-                    lastLogin: new Date()
-                }), userToRegister.password);
-            if (user.errors) {
-                result.data.message = user.errors;
-            } else if (user) {
-                const created_user = await this.userService.findById(user.id);
-                let mailVerificationDto: MailVerificationDto = {
-                    receiver: created_user,
-                    code: this.mailService.generateCode(10),
-                    dateCreated: new Date()
-                };
-                result.success = await this.mailService.create(mailVerificationDto);
-                result.data.message = "User successfully created!"
+                }
             }
         }
-        return result;
+
     }
 
 
@@ -144,7 +112,6 @@ export class AuthService implements IAuthService {
                     result.success = true;
                     return result;
                 }
-
             } else {
                 result.status = HttpStatus.UNAUTHORIZED;
                 result.data.message = "Username or Password wrong!";
@@ -157,22 +124,24 @@ export class AuthService implements IAuthService {
         }
     }
 
-    async verifyAccount(userID: string, code: string): Promise<IResponse> {
+    async verifyAccount(userId: string, code: string): Promise<IResponse> {
         const result: IResponse = {
             status: HttpStatus.OK,
             success: true,
             data: {message: "Your mail was succesfully accepted;"}
         }
-        const user = await this.userService.findById(userID);
+        const user = await this.userService.findById(userId);
         if (user) {
-            const mailVerification = await this.mailService.findOne({receiver: user});
-            if (mailVerification.receiver.equals(user)) {
-                const valuesToUpdate = {status: 'active'};
-                await this.userService.updateByID(userID, valuesToUpdate);
-            } else {
-                result.success = false;
-                result.status = HttpStatus.BAD_REQUEST;
-                result.data.message = "Code and user missmatch";
+            const mailVerification = await this.mailService.findOne({receiverId: userId});
+            if (mailVerification) {
+                if (mailVerification.receiverId === userId) {
+                    const valuesToUpdate = {status: 'active'};
+                    await this.userService.updateByID(userId, valuesToUpdate);
+                } else {
+                    result.success = false;
+                    result.status = HttpStatus.BAD_REQUEST;
+                    result.data.message = "Error bad link";
+                }
             }
         } else {
             result.success = false;
@@ -185,36 +154,17 @@ export class AuthService implements IAuthService {
 
     createToken(user: UserDocument): IToken {
         const expiresIn = 3600;
-        const firstName = user.contact.firstName;
-        const lastName = user.contact.lastName;
         const accessToken = jwt.sign({
             id: user._id,
             username: user.username,
             firstName: user.contact.firstName,
             lastName: user.contact.lastName
-        }, JwtConfig.jwtSecret, {expiresIn});
+        }, this.JWT_CONFIG.jwtSecret, {expiresIn});
         return {
             expiresIn,
             accessToken,
         };
     }
-
-    createStorageForUser(userID: string) {
-        var dir = `./uploads/${userID}`;
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
-        }
-    }
-
-    async createDefaultDocumentsForUser(userID: string) {
-        this.createStorageForUser(userID);
-        await this.userService.findById(userID).then(async user => {
-            await this.tagService.createStandardTags(user);
-        })
-
-    }
-
-
 }
 
 

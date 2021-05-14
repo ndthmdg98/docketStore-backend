@@ -29,10 +29,11 @@ export class CreateAppUserDto {
     readonly password: string;
 
     @ApiProperty()
-    readonly contact: IContactInformation
+    readonly contact: IContactInformation;
 
-
-
+    static instanceOf(object: any): object is ICreateAppUserDto {
+        return !CreateB2BUserDto.instanceOf(object);
+    }
 }
 
 
@@ -51,6 +52,31 @@ export class CreateB2BUserDto {
     @ApiProperty()
     readonly company: ICompanyInformation
 
+    static  instanceOf(object: any): object is ICreateB2BUserDto {
+        return 'company' in object;
+    }
+
+    constructor() {
+    }
 
 
 }
+
+interface ICreateAppUserDto{
+    username: string;
+    password: string;
+    contact: IContactInformation
+}
+
+
+interface ICreateB2BUserDto{
+    username: string;
+    password: string;
+    contact: IContactInformation
+    company: ICompanyInformation
+}
+
+
+
+
+

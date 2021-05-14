@@ -1,7 +1,7 @@
 import {
     Body,
-    Controller,
-    Get,
+    Controller, Delete,
+    Get, HttpException,
     HttpStatus,
     Logger,
     Param,
@@ -16,58 +16,48 @@ import {
 import {DocketService} from "./docket.service";
 import {AuthGuard} from "@nestjs/passport";
 import {Role, Roles} from "../../common/decorators/roles.decorator";
-import {
-    Docket,
-    DocketDocument,
-} from "../../model/docket.schema";
+import {Docket, DocketDocument, DocketFile, DocketViewModel,} from "../../model/docket.schema";
 import {UserService} from "../../auth/user/user.service";
-import {UserDocument} from "../../model/user.schema";
-import {editFileName, FileLoaderService, fileFilter} from "../file-loader/file-loader.service";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {diskStorage} from 'multer';
 import {CreateDocketDto} from "./interfaces";
 import {RolesGuard} from "../../common/guards/roles.guard";
 import {IResponse} from "../../auth/interfaces";
+import {Readable} from 'stream';
+import {TagService} from "../tag/tag.service";
+import {User} from "../../model/user.schema";
 
-export interface IDocketController {
+export const fileFilter = (req, file, callback) => {
+    if (file.originalname.match(/\.(pdf)$/) || file.originalname.match(/\.(png)$/) || file.originalname.match(/\.(jpg)$/)) {
+        callback(null, true);
+    } else {
+        return callback(
+            new HttpException(
+                'Only pdf, png or jpg files are allowed!',
+                HttpStatus.BAD_REQUEST,
+            ),
+            false,
+        );
+    }
 
-    create_b2b(req, res, file, createObjectDto: CreateDocketDto): Promise<Docket | null>;
-
-    create_app(req, res, file): Promise<Docket | null>;
-
-    updateTagsByDocketId(req, res, id: string, tags: string[]): Promise<Docket>;
-
-    findAllByUser(req, res): Promise<Docket[]>;
-
-    findById(req, res, id: string): Promise<Docket | null>
-
-}
-
+};
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('docket')
-export class DocketController implements IDocketController {
+export class DocketController {
     private logger = new Logger('DocketControler');
 
 
     constructor(private docketService: DocketService,
-                private fileLoaderServicce: FileLoaderService,
+                private tagService: TagService,
                 private userService: UserService) {
 
     }
-
 
     @Roles(Role.APP_USER)
     @UseGuards(AuthGuard('jwt'))
     @Post('app/create')
     @UseInterceptors(
         FileInterceptor('file', {
-            storage: diskStorage({
-                destination: function (req, file, cb) {
-                    cb(null, `./uploads/${req.user.id}/`);
-                },
-                filename: editFileName,
-            }),
             fileFilter: fileFilter,
         }),
     )
@@ -77,24 +67,27 @@ export class DocketController implements IDocketController {
             success: false,
             data: {}
         }
-        const filePath = file.destination + file.filename;
-        const sender = req.user;
-        if (!filePath) {
+        const senderId = req.user._id;
+        if (!file) {
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
             result.data.message = "File error";
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
         }
-
-        const docket = await this.docketService.create(sender, sender, filePath);
+        const docketFile: DocketFile = {
+            encoding: file.encoding,
+            mimetype: file.mimetype,
+            buffer: Buffer.from(file.buffer),
+            size: file.size
+        }
+        const docket = await this.docketService.create(senderId, senderId, docketFile);
         if (docket.errors) {
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
             result.data.message = "Docket could not be created! Contact docketStore support"
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
 
         }
-
         result.status = HttpStatus.OK;
-        result.data = docket;
+        result.data = docket.toViewModel();
         result.success = true
         return res.status(HttpStatus.OK).json(result);
     }
@@ -104,12 +97,6 @@ export class DocketController implements IDocketController {
     @Post('b2b/create')
     @UseInterceptors(
         FileInterceptor('file', {
-            storage: diskStorage({
-                destination: function (req, file, cb) {
-                    cb(null, `./uploads/${req.body.receiverId}/`);
-                },
-                filename: editFileName,
-            }),
             fileFilter: fileFilter,
         }),
     )
@@ -119,27 +106,31 @@ export class DocketController implements IDocketController {
             success: false,
             data: {}
         }
-
-        const filePath = file.destination + file.filename;
-        const sender = req.user;
-        if (!filePath) {
+        const senderId = req.user._id;
+        if (!file) {
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
             result.data.message = "File error";
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
         }
-        const receiverUserId: string = createObjectDto.receiverId;
-        if (!receiverUserId) {
+        const receiverId: string = createObjectDto.receiverId;
+        if (!receiverId) {
             result.status = HttpStatus.BAD_REQUEST;
             result.data.message = "No receiver Id was given";
             return res.status(HttpStatus.BAD_REQUEST).json(result);
         }
-        const receiver = await this.userService.findById(receiverUserId);
+        const receiver = await this.userService.findById(receiverId);
         if (!receiver) {
             result.status = HttpStatus.BAD_REQUEST;
             result.data.message = "Receiver Id does not exist";
             return res.status(HttpStatus.BAD_REQUEST).json(result);
         }
-        const docket = await this.docketService.create(receiver, sender, filePath);
+        const docketFile: DocketFile = {
+            encoding: file.encoding,
+            mimetype: file.mimetype,
+            buffer: Buffer.from(file.buffer),
+            size: file.size
+        }
+        const docket = await this.docketService.create(receiverId, senderId, docketFile);
         if (docket.errors) {
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
             result.data.message = "Docket could not be created! Contact docketStore support"
@@ -147,58 +138,140 @@ export class DocketController implements IDocketController {
 
         }
         result.status = HttpStatus.OK;
-        result.data = docket;
+        result.data = docket.toViewModel();
         result.success = true
         return res.status(HttpStatus.OK).json(result);
     }
 
     @Roles(Role.APP_USER)
-    @Get('all')
+    @Get()
     async findAllByUser(@Req() req, @Res() res): Promise<DocketDocument[]> {
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
             data: {}
         }
-        const user: UserDocument = req.user;
+        const user = req.user;
         const dockets = await this.docketService.findAllByUser(user);
+        const docketsViewModel: DocketViewModel[] = []
+        dockets.forEach(docket => {
+            docketsViewModel.push(docket.toViewModel())
+        })
         result.success = true;
-        result.data = dockets;
+        result.data = docketsViewModel;
         return res.status(HttpStatus.OK).json(result);
     }
 
     @Roles(Role.APP_USER)
     @Get(':id')
-    async findById(@Req() req, @Res() res, @Param('id') id: string): Promise<DocketDocument | null> {
+    async findById(@Req() req, @Res() res, @Param('id') id: string): Promise<any> {
+        const accept = req.headers.accept;
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
             data: {}
         }
-        const docket = await this.docketService.findById(id);
+        const docketDocument = await this.docketService.findById(id);
+        if (accept === "application/json") {
+            result.success = true;
+            result.data = docketDocument.toViewModel()
+            return res.status(HttpStatus.OK).json(result);
+        } else if (accept === "application/pdf") {
+            const readable: Readable = docketDocument.toReadable();
+            res.writeHead(200, {
+                'Content-Type': "application/pdf",
+                'Content-Length': readable.readableLength
+            });
+            readable.pipe(res)
+        }
+
+    }
+
+    @Roles(Role.APP_USER)
+    @Get('tag/:tagId')
+    async findByTags(@Req() req, @Res() res, @Param('tagId') tagId: string): Promise<any> {
+        const result: IResponse = {
+            status: HttpStatus.OK,
+            success: false,
+            data: {}
+        }
+        const tag = await this.tagService.findById(tagId);
+        const docketDocuments = await this.docketService.findByTag(tag);
+        var docketViewModels: DocketViewModel[] = [];
+        docketDocuments.forEach(docketDocument => {
+            docketViewModels.push(docketDocument.toViewModel())
+        })
         result.success = true;
-        result.data = docket;
+        result.data = docketViewModels
         return res.status(HttpStatus.OK).json(result);
     }
 
 
     @Roles(Role.APP_USER)
-    @Put(':id')
-    async updateTagsByDocketId(@Req() req, @Res() res, @Param('id') id: string, @Body()  tags: string[]): Promise<DocketDocument | null> {
+    @Put(':docketId/mark/:tagId')
+    async markDocketWithTag(@Req() req, @Res() res, @Param('docketId') docketId: string, @Param('tagId') tagId: string): Promise<DocketDocument | null> {
         //TODO incoming tags must be part of users tags
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
             data: {}
         }
-        const docket = await this.docketService.updateById(id, {tags: tags});
-        if (!docket) {
+        const markedDocket = await this.docketService.markDocketWithTag(docketId, tagId);
+        if (markedDocket.errors) {
+            //TODO Error handling
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
             result.data.message = "Error";
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
+        } else {
+            result.success = true;
+            result.data = markedDocket.toViewModel();
+            return res.status(HttpStatus.OK).json(result);
         }
-        result.success = true;
-        result.data = docket;
+    }
+
+    @Roles(Role.APP_USER)
+    @Put(':docketId/unmark/:tagId')
+    async unmarkDocketWithTag(@Req() req, @Res() res, @Param('docketId') docketId: string, @Param('tagId') tagId: string): Promise<DocketDocument | null> {
+        //TODO incoming tags must be part of users tags
+        const result: IResponse = {
+            status: HttpStatus.OK,
+            success: false,
+            data: {}
+        }
+        const docket = await this.docketService.findById(docketId);
+        if (docket.errors) {
+            //TODO Error handling after find Docket By Id
+            result.status = HttpStatus.INTERNAL_SERVER_ERROR;
+            result.data.message = "Error";
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
+        } else {
+            const updatedDocket = await this.docketService.unmarkDocketWithTag(docketId, tagId);
+            if (updatedDocket.errors) {
+                //TODO Error Handling after unmark Docket
+            }
+            result.success = true;
+            result.data = updatedDocket.toViewModel();
+            return res.status(HttpStatus.OK).json(result);
+        }
+
+    }
+
+    @Roles(Role.APP_USER)
+    @Delete(':id')
+    async deleteById(@Req() req, @Res() res, @Param('id') id: string): Promise<Docket | null> {
+        const result: IResponse = {
+            status: HttpStatus.OK,
+            success: false,
+            data: {}
+        }
+        const deletedDocket = await this.docketService.deleteById(id);
+        if (deletedDocket == null) {
+            result.success = true;
+            result.data = {message: "Docket succesfully deleted"}
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
+        }
+        result.success = false;
+        result.data = {message: "Docket deletion failed"}
         return res.status(HttpStatus.OK).json(result);
     }
 

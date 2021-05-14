@@ -2,68 +2,43 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="71ca643a-a5b3-47a2-91e6-ee37d5dabe30" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/nest-cli.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/docket/docket.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/docket/docket.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/docket/docket.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/docket/interfaces.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/file-loader/file-loader.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/file-loader/file-loader.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/tag/interfaces.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/tag/tag.controller.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/tag/tag.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/tag/tag.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/tag/tag.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/tag/tag.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app.controller.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/auth.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/auth.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/interfaces.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/local.strategy.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/mail/mail.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/mail/mail.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/mail/mail.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/user/user.controller.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/user/user.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/user/user.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/user/user.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/auth/user/user.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/decorators/roles.decorator.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/guards/roles.guard.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/interceptors/exception.interceptor.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/interceptors/timeout.interceptor.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/subscription/notification.payload.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/subscription/notification.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/subscription/subscription.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/subscription/subscription.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/subscription/subscription.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/subscription/templates/notifications.template.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lidl/getRefreshToken.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/docket.schema.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/mail.schema.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/subscription.schema.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/tag.schema.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/model/user.schema.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/shared/config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/app.e2e-spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/auth.e2e-spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/jest-e2e.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tsconfig.build.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app-config.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.service.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/file-loader/file-loader.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/interfaces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tag/interfaces.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tag/tag.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tag/tag.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/interfaces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/interfaces.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail/mail.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail/mail.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/user/user.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/user/user.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/user/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/subscription/notification.payload.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/subscription/notification.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/subscription/subscription.controller.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/subscription/subscription.module.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/subscription/subscription.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/subscription/templates/notifications.template.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lidl/getRefreshToken.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/docket.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/docket.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/mail.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/mail.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/subscription.schema.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/tag.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/tag.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/user.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/user.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shared/config.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,16 +76,23 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/auth" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs.mocha.mocha_node_package_dir" value="" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="prettierjs.PrettierConfiguration.Package" value="$PROJECT_DIR$/node_modules/prettier" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Debugger" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/auth" />
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/../app/src/app" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="NodeJSConfigurationType" path-to-js-file="src/main.ts" working-dir="$PROJECT_DIR$">
@@ -130,7 +112,7 @@
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
-        <script value="start" />
+        <script value="start:debug" />
       </scripts>
       <node-interpreter value="project" />
       <envs>
@@ -156,7 +138,11 @@
       <workItem from="1619185510258" duration="338000" />
       <workItem from="1620478424745" duration="1151000" />
       <workItem from="1620662042816" duration="2399000" />
-      <workItem from="1620725966506" duration="227000" />
+      <workItem from="1620725966506" duration="7283000" />
+      <workItem from="1620737325351" duration="11760000" />
+      <workItem from="1620812045083" duration="141000" />
+      <workItem from="1620823615523" duration="12395000" />
+      <workItem from="1620905320920" duration="16773000" />
     </task>
     <servers />
   </component>
@@ -173,11 +159,44 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/auth/auth.controller.ts</url>
-          <line>52</line>
-          <option name="timeStamp" value="8" />
+          <url>file://$PROJECT_DIR$/../app/src/app/features/docket/add-docket/add-docket.component.ts</url>
+          <line>58</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/api/tag/tag.controller.ts</url>
+          <line>44</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/auth/auth.service.ts</url>
+          <line>132</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="78" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/api/tag/tag.controller.ts</url>
+          <line>31</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/api/docket/docket.service.ts</url>
+          <line>29</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="82" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/api/docket/docket.controller.ts</url>
+          <line>218</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="83" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="javascript-exception" />
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>
