@@ -1,9 +1,9 @@
 import {
+    DynamicModule,
     Inject,
     Module,
 } from '@nestjs/common';
 
-import {MailModule} from "./mail/mail.module";
 import {MongooseModule} from "@nestjs/mongoose";
 import {PassportModule} from "@nestjs/passport";
 import {JwtModule} from "@nestjs/jwt";
@@ -17,6 +17,11 @@ import {MulterModule} from "@nestjs/platform-express";
 import {TagSchema} from "../model/tag.schema";
 import {TagService} from "../api/tag/tag.service";
 import {TagModule} from "../api/tag/tag.module";
+import {MailSchema} from "../model/mail.schema";
+import {MailerModule} from "@nestjs-modules/mailer";
+import {HandlebarsAdapter} from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import {MailService} from "./mail.service";
+import {APP_DI_CONFIG, AppConfig} from "../app.module";
 
 
 export const JWT_DI_CONFIG: JwtConfig = {
@@ -25,19 +30,28 @@ export const JWT_DI_CONFIG: JwtConfig = {
 };
 
 
-export class JwtConfig {
-    jwtSecret: string;
-    expiresIn: string;
-}
+export const MAIL_DI_CONFIG: MailConfig = {
+    hostname: "smtp.strato.de",
+    port: 465,
+    username: process.env["STRATO_MAIL_USERNAME"],
+    password: process.env["STRATO_MAIL_PASSWORD"],
+    senderDisplayHostname: "service@ndfnb.de",
+    authenticationHostname: "http://localhost:3000/auth"
+};
+
+
 
 
 
 
 @Module({
-    imports: [MongooseModule.forFeature([{name: 'Users', schema: UserSchema}]),
-        MongooseModule.forFeature([{name: 'Tags', schema: TagSchema}]),
+    imports: [
         TagModule,
+        UserModule,
         PassportModule,
+        MongooseModule.forFeature([{name: 'Users', schema: UserSchema}]),
+        MongooseModule.forFeature([{name: 'Tags', schema: TagSchema}]),
+        MongooseModule.forFeature([{name: 'Mail', schema: MailSchema}]),
         MulterModule.register({
             dest: './uploads',
         }),
@@ -45,8 +59,34 @@ export class JwtConfig {
             secret: JWT_DI_CONFIG.jwtSecret,
             signOptions: {expiresIn: JWT_DI_CONFIG.expiresIn},
         }),
-        MailModule,
-        UserModule
+        MailerModule.forRoot({
+            transport: {
+                host: MAIL_DI_CONFIG.hostname,
+                ignoreTLS: true,
+                port: MAIL_DI_CONFIG.port,
+                secure: true,
+                auth: {
+                    user: MAIL_DI_CONFIG.username,
+                    pass: MAIL_DI_CONFIG.password,
+                },
+                tls: {
+                    ciphers: 'SSLv3',
+                    rejectUnauthorized: false
+                },
+                protocol: 'smtps',
+
+                defaults: {
+                    from: MAIL_DI_CONFIG.senderDisplayHostname,
+                },
+                template: {
+                    dir: process.cwd() + '/templates/',
+                    adapter: new HandlebarsAdapter(),
+                    options: {
+                        strict: true,
+                    },
+                },
+            }
+        }),
     ],
     controllers: [AuthController],
     providers: [
@@ -54,9 +94,14 @@ export class JwtConfig {
         LocalStrategy,
         JwtStrategy,
         TagService,
+        MailService,
         {
             provide: 'JWT_CONFIG',
             useValue: JWT_DI_CONFIG
+        },
+        {
+            provide: 'MAIL_CONFIG',
+            useValue: MAIL_DI_CONFIG
         }
     ],
     exports: [
@@ -67,6 +112,35 @@ export class JwtConfig {
 
 })
 export class AuthModule {
-    constructor() {
+    static forRoot(appConfig: AppConfig): DynamicModule {
+        return {
+            module: AuthModule,
+            providers: [ {
+                provide: 'APP_CONFIG',
+                useValue: appConfig
+            }],
+            exports: [ {
+                provide: 'APP_CONFIG',
+                useValue: appConfig
+            },],
+        };
     }
 }
+
+
+export class JwtConfig {
+    jwtSecret: string;
+    expiresIn: string;
+}
+
+
+
+export class MailConfig {
+    hostname: string;
+    port: number;
+    username: string;
+    password: string;
+    senderDisplayHostname: string;
+    authenticationHostname: string;
+}
+

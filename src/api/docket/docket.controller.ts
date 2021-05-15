@@ -24,7 +24,6 @@ import {RolesGuard} from "../../common/guards/roles.guard";
 import {IResponse} from "../../auth/interfaces";
 import {Readable} from 'stream';
 import {TagService} from "../tag/tag.service";
-import {User} from "../../model/user.schema";
 
 export const fileFilter = (req, file, callback) => {
     if (file.originalname.match(/\.(pdf)$/) || file.originalname.match(/\.(png)$/) || file.originalname.match(/\.(jpg)$/)) {
@@ -44,7 +43,7 @@ export const fileFilter = (req, file, callback) => {
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('docket')
 export class DocketController {
-    private logger = new Logger('DocketControler');
+    private logger = new Logger('DocketController');
 
 
     constructor(private docketService: DocketService,
@@ -61,7 +60,7 @@ export class DocketController {
             fileFilter: fileFilter,
         }),
     )
-    async create_app(@Req() req, @Res() res, @UploadedFile() file): Promise<any> {
+    async create_app(@Req() req, @Res() res, @UploadedFile() file): Promise<IResponse> {
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
@@ -70,7 +69,8 @@ export class DocketController {
         const senderId = req.user._id;
         if (!file) {
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
-            result.data.message = "File error";
+            result.data.message = "No File Error";
+            this.logger.error(`No File Error. User ${senderId} has sent this request`)
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
         }
         const docketFile: DocketFile = {
@@ -81,13 +81,17 @@ export class DocketController {
         }
         const docket = await this.docketService.create(senderId, senderId, docketFile);
         if (docket.errors) {
+            const message = "Docket could not be created! Contact docketStore support"
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
-            result.data.message = "Docket could not be created! Contact docketStore support"
+            this.logger.error(message)
+            result.data.message = message
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
 
         }
+        const message = "Docket successfully created!";
+        this.logger.log(message)
         result.status = HttpStatus.OK;
-        result.data = docket.toViewModel();
+        result.data.message =  message;
         result.success = true
         return res.status(HttpStatus.OK).json(result);
     }
@@ -100,7 +104,7 @@ export class DocketController {
             fileFilter: fileFilter,
         }),
     )
-    async create_b2b(@Req() req, @Res() res, @UploadedFile() file, @Body() createObjectDto: CreateDocketDto): Promise<any> {
+    async create_b2b(@Req() req, @Res() res, @UploadedFile() file, @Body() createObjectDto: CreateDocketDto): Promise<IResponse> {
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
@@ -138,14 +142,14 @@ export class DocketController {
 
         }
         result.status = HttpStatus.OK;
-        result.data = docket.toViewModel();
+        result.data = docket;
         result.success = true
         return res.status(HttpStatus.OK).json(result);
     }
 
     @Roles(Role.APP_USER)
     @Get()
-    async findAllByUser(@Req() req, @Res() res): Promise<DocketDocument[]> {
+    async findAllByUser(@Req() req, @Res() res): Promise<any> {
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
@@ -155,7 +159,7 @@ export class DocketController {
         const dockets = await this.docketService.findAllByUser(user);
         const docketsViewModel: DocketViewModel[] = []
         dockets.forEach(docket => {
-            docketsViewModel.push(docket.toViewModel())
+            docketsViewModel.push(docket)
         })
         result.success = true;
         result.data = docketsViewModel;
@@ -174,7 +178,7 @@ export class DocketController {
         const docketDocument = await this.docketService.findById(id);
         if (accept === "application/json") {
             result.success = true;
-            result.data = docketDocument.toViewModel()
+            result.data = docketDocument
             return res.status(HttpStatus.OK).json(result);
         } else if (accept === "application/pdf") {
             const readable: Readable = docketDocument.toReadable();
@@ -199,7 +203,7 @@ export class DocketController {
         const docketDocuments = await this.docketService.findByTag(tag);
         var docketViewModels: DocketViewModel[] = [];
         docketDocuments.forEach(docketDocument => {
-            docketViewModels.push(docketDocument.toViewModel())
+            docketViewModels.push(docketDocument)
         })
         result.success = true;
         result.data = docketViewModels
@@ -224,7 +228,7 @@ export class DocketController {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
         } else {
             result.success = true;
-            result.data = markedDocket.toViewModel();
+            result.data = markedDocket;
             return res.status(HttpStatus.OK).json(result);
         }
     }
@@ -250,7 +254,7 @@ export class DocketController {
                 //TODO Error Handling after unmark Docket
             }
             result.success = true;
-            result.data = updatedDocket.toViewModel();
+            result.data = updatedDocket;
             return res.status(HttpStatus.OK).json(result);
         }
 

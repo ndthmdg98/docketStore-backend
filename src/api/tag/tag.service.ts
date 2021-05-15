@@ -1,9 +1,7 @@
 import {Injectable} from '@nestjs/common';
-import {User, UserDocument,} from "../../model/user.schema";
-import {Tag, TagDocument} from "../../model/tag.schema";
+import {TagDocument} from "../../model/tag.schema";
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
-import {debug} from "console";
 import {CreateTagDto} from "./interfaces";
 
 
@@ -25,8 +23,8 @@ export class TagService  {
         return createdTagDocument.save();
     }
 
-    async findAllByUser(user: User): Promise<TagDocument[]> {
-        return this.tagModel.find({owner: user}).exec();
+    async findAllByUser(userId: string): Promise<TagDocument[]> {
+        return this.tagModel.find({userId: userId}).exec();
     }
 
     async findById(tagId: string): Promise<TagDocument> {

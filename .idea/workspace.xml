@@ -2,43 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="71ca643a-a5b3-47a2-91e6-ee37d5dabe30" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app-config.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/common/logger.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.service.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/file-loader/file-loader.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/tag/interfaces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tag/interfaces.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.module.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.service.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/tag/tag.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tag/tag.controller.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/tag/tag.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tag/tag.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app-config.module.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/interfaces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/interfaces.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail/mail.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail/mail.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/user/user.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/user/user.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/local.strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/local.strategy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.controller.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.module.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/user/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/subscription/notification.payload.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/subscription/notification.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/subscription/subscription.controller.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/subscription/subscription.module.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/subscription/subscription.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/subscription/templates/notifications.template.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lidl/getRefreshToken.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/docket.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/docket.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/mail.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/mail.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/subscription.schema.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/tag.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/tag.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/user.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/user.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shared/config.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +40,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -92,6 +84,9 @@
       <recent name="$PROJECT_DIR$/src/auth" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/../app/src/app" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/auth" />
     </key>
   </component>
   <component name="RunManager">
@@ -142,7 +137,9 @@
       <workItem from="1620737325351" duration="11760000" />
       <workItem from="1620812045083" duration="141000" />
       <workItem from="1620823615523" duration="12395000" />
-      <workItem from="1620905320920" duration="16773000" />
+      <workItem from="1620905320920" duration="17023000" />
+      <workItem from="1621095728739" duration="7353000" />
+      <workItem from="1621113168050" duration="7028000" />
     </task>
     <servers />
   </component>
@@ -164,34 +161,10 @@
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/api/tag/tag.controller.ts</url>
-          <line>44</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="76" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/auth/auth.service.ts</url>
-          <line>132</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="78" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/api/tag/tag.controller.ts</url>
-          <line>31</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="79" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/api/docket/docket.service.ts</url>
-          <line>29</line>
+          <url>file://$PROJECT_DIR$/src/auth/auth.controller.ts</url>
+          <line>39</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="82" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/api/docket/docket.controller.ts</url>
-          <line>218</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="83" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

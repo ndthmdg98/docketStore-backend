@@ -1,5 +1,4 @@
-import {Body, Controller, Get, HttpStatus, Param, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
-import {Tag, TagViewModel} from "../../model/tag.schema";
+import {Body, Controller, Get, HttpStatus, Logger, Param, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
 import {TagService} from "./tag.service";
 import {AuthGuard} from "@nestjs/passport";
 import {Role, Roles} from "../../common/decorators/roles.decorator";
@@ -8,20 +7,12 @@ import {RolesGuard} from "../../common/guards/roles.guard";
 import {IResponse} from "../../auth/interfaces";
 
 
-export interface ITagController {
-
-    create(req, res, file, createObjectDto: CreateTagDto): Promise<any>;
-    updateById(req, res, id: string, valuesToChange: object): Promise<any>;
-    findAllByUser(req, res): Promise<any[]>;
-    findById(req, res, id: string): Promise<any>;
-
-}
 
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('tag')
-export class TagController implements ITagController {
-
+export class TagController {
+    private readonly logger: Logger = new Logger("TagController")
     constructor(private tagService: TagService) {
     }
 
@@ -36,20 +27,15 @@ export class TagController implements ITagController {
 
     @Roles(Role.APP_USER)
     @Get()
-    async findAllByUser(@Req() req, @Res() res): Promise<any> {
+    async findAllByUser(@Req() req, @Res() res): Promise<IResponse> {
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
             data: {}
         }
         const tags = await this.tagService.findAllByUser(req.user);
-        const tagViewModels: TagViewModel[] = []
-        tags.forEach(tag => {
-            tagViewModels.push(tag.toViewModel())
-        })
-
         result.success = true;
-        result.data = tagViewModels;
+        result.data = tags;
         return res.status(HttpStatus.OK).json(result);
     }
 

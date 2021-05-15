@@ -1,9 +1,7 @@
 import * as passportLocalMongoose from 'passport-local-mongoose';
-import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
+import {Prop, raw, Schema, SchemaFactory} from "@nestjs/mongoose";
 import {PassportLocalDocument} from "mongoose";
 import {Role} from "../common/decorators/roles.decorator";
-
-
 
 
 export interface IAdresse {
@@ -14,16 +12,6 @@ export interface IAdresse {
     country: string;
 }
 
-export interface AdresseViewModel {
-    street: string;
-    housenumber: string;
-    city: string;
-    zipcode: string;
-    country: string;
-}
-
-
-
 export interface ICompanyInformation {
     companyName: string;
     companyImagePath: string;
@@ -32,15 +20,6 @@ export interface ICompanyInformation {
     adresse: IAdresse;
 }
 
-export interface CompanyInformationViewModel {
-    companyName: string;
-    companyImagePath: string;
-    category: string;
-    ustid: string;
-    adresse: AdresseViewModel;
-}
-
-
 export interface IContactInformation {
     firstName: string;
     lastName: string;
@@ -48,24 +27,25 @@ export interface IContactInformation {
     contactEmail: string;
 }
 
-export interface ContactInformationViewModel {
-    firstName: string;
-    lastName: string;
-}
-
-export interface UserViewModel {
-    company: CompanyInformationViewModel
-    contact: ContactInformationViewModel
-    _id?: string
-}
 
 @Schema()
 export class User {
 
-
-
-    @Prop()
-    contact: IContactInformation;
+    @Prop(raw({
+            companyName: {type: String},
+            companyImagePath:  {type: String},
+            category:  {type: String},
+            ustid:  {type: String},
+            adresse:  raw({
+                street: String,
+                housenumber: String,
+                city: String,
+                zipcode: String,
+                country: String,
+            })
+        })
+    )
+    company: ICompanyInformation;
 
     @Prop()
     email: string;
@@ -88,16 +68,28 @@ export class User {
 
     _id: string;
 
-    @Prop()
-    company?: ICompanyInformation;
+    @Prop(raw({
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+        contactEmail: String,
+    }))
+    contact: IContactInformation;
+
+
+
+
+
+
+
 
 }
-
 
 
 export type UserDocument = User & PassportLocalDocument;
 export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(passportLocalMongoose);
-UserSchema.methods.toViewModel = function (): UserViewModel {
-    return {_id: this._id, contact: {firstName: this.contact.firstName, lastName: this.contact.lastName}, company: this.company};
-}
+UserSchema.methods.isActive = function isActive () {
+    // @ts-ignore
+    return ("status" in this && this.status == "active")
+};

@@ -27,23 +27,14 @@ export class DocketService {
 
     async markDocketWithTag(docketId: string, tagId: string): Promise<DocketDocument> {
         const docket = await this.findById(docketId);
-        const tags: string[] = docket.getTags();
-        if (tags.includes(tagId)) {
-            return docket;
-        } else {
-            tags.push(tagId)
-            return await this.updateById(docketId, {tags: tags})
-        }
+        docket.addTag(tagId);
+        return await this.updateById(docketId, {tags: docket.getTags()})
     }
 
     async unmarkDocketWithTag(docketId: string, tagId: string): Promise<DocketDocument> {
         const docket = await this.findById(docketId);
-        const tags = docket.getTags();
-        const index = tags.indexOf(tagId, 0)
-        if (index > -1) {
-            tags.splice(index, 1);
-        }
-        return await this.updateById(docketId, {tags: tags})
+        docket.removeTag(tagId);
+        return await this.updateById(docketId, {tags: docket.getTags()})
     }
 
     async create(receiverId: string, senderId: string, docketFile: DocketFile): Promise<DocketDocument> {
@@ -51,15 +42,17 @@ export class DocketService {
             createdAt: new Date(),
             receiverId: receiverId,
             senderId: senderId,
-            tags: new Set(),
+            tags: [],
             docketFile: docketFile
         });
         return createdDocket.save();
     }
 
-    async deleteById(docketId: string): Promise<DocketDocument> {
+    async deleteById(docketId: string): Promise<Docket> {
         return await this.docketModel.findByIdAndDelete(docketId).exec();
     }
+
+
 
 
     private async updateById(docketId: string, valuesToChange: object): Promise<DocketDocument> {

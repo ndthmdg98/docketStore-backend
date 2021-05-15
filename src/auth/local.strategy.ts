@@ -6,10 +6,11 @@ import {AuthService} from "./auth.service";
 import {Strategy} from "passport-local";
 import {User, UserDocument} from "../model/user.schema";
 import {IResponse} from "./interfaces";
+import {UserService} from "./user/user.service";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-    constructor(private readonly authService: AuthService, @InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>) {
+    constructor(private readonly authService: AuthService, private readonly userService: UserService) {
         super({
             usernameField: 'username',
             passwordField: 'password'
@@ -23,8 +24,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
             success: false,
             data: {}
         }
-        const user = await this.authService.validateUserWithUsernameAndPassword(username, password);
-        if (!user) {
+        const user = await this.userService.findByUsername(username);
+        const success = await this.authService.validateUserWithPassword(user, password);
+        if (!success) {
             result.data.message = "Username or password wrong";
             result.status = HttpStatus.UNAUTHORIZED;
             return result;

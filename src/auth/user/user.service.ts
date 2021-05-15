@@ -6,33 +6,31 @@ import {User, UserDocument} from "../../model/user.schema";
 import {CreateAppUserDto, CreateB2BUserDto} from "../interfaces";
 import {TagService} from "../../api/tag/tag.service";
 
-export interface IUserService {
-    createUser(userToCreate: CreateAppUserDto | CreateB2BUserDto): Promise<UserDocument>;
-
-    findAll(req, res): Promise<User[]>;
-
-    findById(id: string): Promise<User | null>;
-
-    findOne(options: object): Promise<User[] | User | null>;
-
-    updateByID(id: string, valuesUseroChange: object): Promise<User | null>;
-
-    updateOne(findUserOptions: object, valuesUseroChange: object): Promise<User | null>;
-
-    deleteAll(req, res): Promise<any>;
-
-    deleteByID(id: string): Promise<any>;
-
-    deleteOne(options: object): Promise<any>;
-}
 
 
 @Injectable()
-export class UserService implements IUserService {
+export class UserService {
     constructor(@InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>, private tagService: TagService) {
 
     }
 
+    async existsUserId(userId: string): Promise<boolean>{
+        const user = await this.userModel.findById(userId).exec();
+        if(user) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    async existsUsername(username: string): Promise<boolean>{
+        const user = await this.userModel.findOne({username: username }).exec();
+        if(user) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     async createUser(userToCreate: CreateB2BUserDto | CreateAppUserDto): Promise<UserDocument> {
         if (CreateB2BUserDto.instanceOf(userToCreate)) {
             const user = await this.userModel.register(new this.userModel(
@@ -69,7 +67,9 @@ export class UserService implements IUserService {
     async findAll(): Promise<UserDocument[]> {
         return await this.userModel.find().exec();
     }
-
+    async findByUsername(username: string): Promise<UserDocument> {
+        return await this.userModel.findOne({username: username}).exec();
+    }
     async findOne(options: object): Promise<UserDocument> {
         return await this.userModel.findOne(options).exec();
     }

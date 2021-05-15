@@ -1,9 +1,9 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
-import {func} from "joi";
+import {Logger} from "@nestjs/common";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, {cors: true});
+    const app = await NestFactory.create(AppModule, {cors: true, logger: false});
     app.use(function (req, res, next) {
 
         // Website you wish to allow to connect
@@ -22,6 +22,7 @@ async function bootstrap() {
         // Pass to next layer of middleware
         next();
     });
+    app.useLogger(new Logger())
     await app.listen(3000);
 }
 

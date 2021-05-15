@@ -1,20 +1,21 @@
-import {Inject, Injectable} from '@nestjs/common';
+import {Inject, Injectable, Logger} from '@nestjs/common';
 
 import {Model} from "mongoose";
 import {debug} from "console";
 import {InjectModel} from "@nestjs/mongoose";
 import {MailerService} from "@nestjs-modules/mailer";
-import {Mail, MailDocument, MailVerificationDto} from "../../model/mail.schema";
-import {AppConfig} from "../../app-config.module";
+import {MailConfig} from "./auth.module";
+import {MailDocument, MailVerificationDto} from "../model/mail.schema";
+import {AppConfig} from "../app.module";
 
 @Injectable()
 export class MailService {
 
-    private readonly baseUrlAuth = this.APP_CONFIG.baseUrl + '/auth';
 
-
+    private logger = new Logger('MailService');
     constructor(
         @InjectModel('Mail') private readonly mailModel: Model<MailDocument>,
+        @Inject('MAIL_CONFIG') private readonly MAIL_CONFIG: MailConfig,
         @Inject('APP_CONFIG') private readonly APP_CONFIG: AppConfig,
         private readonly mailerService: MailerService,
     ) {
@@ -24,7 +25,7 @@ export class MailService {
 
     async sendWelcomeEmail(receiverId: string, receiverMail: string, receiverFirstName,  code: string): Promise<boolean> {
         let success = true;
-        const url = `${this.baseUrlAuth}/${receiverId}/${code}/`
+        const url = `${this.MAIL_CONFIG.authenticationHostname}/${receiverId}/${code}/`
         await this.mailerService.sendMail({
             subject: `Welcome to docketStore! Please Confirm Your Email Address`,
             to: receiverMail,
@@ -38,9 +39,11 @@ export class MailService {
             html: url
         }).then(() => {
             success = true;
+            this.logger.log("Welcome Mail successfully sent!")
         }).catch(err => {
             debug(err);
             success = false;
+            this.logger.log("An Error occurred sending welcome Mail!")
         });
         return success;
 

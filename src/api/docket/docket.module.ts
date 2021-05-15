@@ -4,7 +4,6 @@ import {DocketController} from "./docket.controller";
 import {DocketSchema} from "../../model/docket.schema";
 import {UserModule} from "../../auth/user/user.module";
 import {DocketService} from "./docket.service";
-import {FileLoaderService} from "../file-loader/file-loader.service";
 import {TagService} from "../tag/tag.service";
 import {TagSchema} from "../../model/tag.schema";
 
@@ -15,7 +14,7 @@ import {TagSchema} from "../../model/tag.schema";
         UserModule
     ],
     controllers: [DocketController],
-    providers: [DocketService, FileLoaderService, TagService],
+    providers: [DocketService, TagService],
     exports: [DocketService],
 })
 export class DocketModule {}

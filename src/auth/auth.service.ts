@@ -1,28 +1,20 @@
-import {HttpStatus, Inject, Injectable} from '@nestjs/common';
-import {AuthenticationResult, PassportLocalModel, Schema} from 'mongoose';
+import {HttpStatus, Inject, Injectable, Logger} from '@nestjs/common';
+import {AuthenticationResult, PassportLocalModel} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
 import * as jwt from "jsonwebtoken";
-import {MailService} from "./mail/mail.service";
 import {UserService} from "./user/user.service";
 import {User, UserDocument} from "../model/user.schema";
 import {MailVerificationDto} from "../model/mail.schema";
 import {CreateAppUserDto, CreateB2BUserDto, IResponse, IToken, JwtPayloadInterface} from "./interfaces";
 import {TagService} from "../api/tag/tag.service";
 import {JwtConfig} from "./auth.module";
+import {MailService} from "./mail.service";
+import * as passport from "passport";
 
-
-export interface IAuthService {
-    registerUser(userToRegister: CreateAppUserDto | CreateB2BUserDto): Promise<IResponse>;
-
-    validateUser(payload: JwtPayloadInterface): Promise<User>;
-
-    validateUserWithUsernameAndPassword(username: string, pass: string): Promise<IResponse>;
-
-    verifyAccount(userID: string, code: string): Promise<IResponse>;
-}
 
 @Injectable()
-export class AuthService implements IAuthService {
+export class AuthService {
+    private logger = new Logger('AuthService');
 
     constructor(
         private readonly mailService: MailService,
@@ -41,19 +33,23 @@ export class AuthService implements IAuthService {
         }
         const user = await this.userService.findOne({email: userToRegister.username});
         if (user) {
+            const message = "User with given e-mail already registered!";
             result.status = HttpStatus.BAD_REQUEST
-            result.data.message = "User with given e-mail already registered";
+            result.data.message = message
+            this.logger.log(message);
             return result;
         } else {
             const user = await this.userService.createUser(userToRegister);
             if (user.errors) {
-                result.data.message = "User could not be created!";
+                const message = "User could not be created!";
                 result.status = HttpStatus.INTERNAL_SERVER_ERROR
+                result.data.message = message;
+                this.logger.log(message);
                 return result;
-            } else if (user) {
-                const created_user = await this.userService.findById(user.id);
+            } else if (user && user._id) {
+                this.logger.log("User successfully created!");
                 let mailVerificationDto: MailVerificationDto = {
-                    receiverId: created_user._id,
+                    receiverId: user._id,
                     code: this.mailService.generateCode(10),
                     dateCreated: new Date()
                 };
@@ -63,10 +59,12 @@ export class AuthService implements IAuthService {
                     result.status = HttpStatus.INTERNAL_SERVER_ERROR
                     return result;
                 } else if (mailVerification) {
+                    this.logger.log("Mail Database Object successfully created!");
                     const sentMail = await this.mailService.sendWelcomeEmail(user._id, user.username, user.contact.firstName, mailVerificationDto.code);
                     if (sentMail) {
-                        result.data.message = "User successfully created! Please check your Mails"
+                        const message = "User successfully created! Please check your Mails"
                         result.success = true;
+                        result.data.message = message;
                         return result;
                     } else {
                         result.data.message = "Mail could not successfully sent!"
@@ -82,47 +80,34 @@ export class AuthService implements IAuthService {
     }
 
 
+    async checkPassword(user: UserDocument, password: string) {
+        const authenticationResult: AuthenticationResult = await user.authenticate(password);
+        if (authenticationResult.error) {
+            this.logger.log("Username or Password Wrong!")
+            return false;
+        } else if (authenticationResult.user) {
+            return true;
+        }
+    }
+
+
+    login2() {
+        passport.serializeUser(function (user: UserDocument, done) {
+            done(null, user._id);
+        });
+    }
+
     async validateUser(payload: JwtPayloadInterface): Promise<User> {
-        console.log(payload);
         return await this.userService.findById(payload.id);
     }
 
-    async validateUserWithUsernameAndPassword(username: string, pass: string): Promise<IResponse> {
-        const result: IResponse = {
-            status: HttpStatus.OK,
-            success: false,
-            data: {}
+    async validateUserWithPassword(user: UserDocument, pass: string): Promise<boolean> {
+            const success = await this.checkPassword(user, pass);
+            return success;
         }
-        const user = await this.userService.findOne({username: username});
-        if (user) {
-            const authenticationResult: AuthenticationResult = await user.authenticate(pass);
-            console.log(authenticationResult.error)
-            if (authenticationResult.error) {
-                result.status = HttpStatus.UNAUTHORIZED;
-                result.data.message = "Username or Password wrong!";
-                return result
-            } else if (authenticationResult.user) {
-                if ("status" in authenticationResult.user && authenticationResult.user.status == "pending") {
-                    result.data.message = "Please verify first your mail";
-                    result.success = false;
-                    return result;
-                } else {
-                    const {password, ...response} = authenticationResult.user.toObject({getters: true})
-                    result.data = response;
-                    result.success = true;
-                    return result;
-                }
-            } else {
-                result.status = HttpStatus.UNAUTHORIZED;
-                result.data.message = "Username or Password wrong!";
-                return result;
-            }
-        } else {
-            result.status = HttpStatus.UNAUTHORIZED;
-            result.data.message = "Username or Password wrong!";
-            return result
-        }
-    }
+
+
+
 
     async verifyAccount(userId: string, code: string): Promise<IResponse> {
         const result: IResponse = {
