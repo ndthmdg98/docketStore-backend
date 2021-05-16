@@ -54,6 +54,8 @@ export class AuthController {
                     res.cookie('accessToken', token, {maxAge: 360000, httpOnly: true, secure: true});
                     return res.status(HttpStatus.OK).json(result);
                 } else {
+                    result.status = 401;
+                    result.data.message = "Username or Password wrong!";
                     return res.status(HttpStatus.OK).json(result);
                 }
             }

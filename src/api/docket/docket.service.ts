@@ -1,9 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
-import {User, UserDocument} from "../../model/user.schema";
 import {Model} from "mongoose";
 import {Docket, DocketDocument, DocketFile} from "../../model/docket.schema";
-import {Tag} from "../../model/tag.schema";
 
 @Injectable()
 export class DocketService {
@@ -17,12 +15,12 @@ export class DocketService {
         return await this.docketModel.findById(docketId).exec();
     }
 
-    async findAllByUser(user: UserDocument): Promise<DocketDocument[]> {
-        return await this.docketModel.find({receiver: user}).exec();
+    async findAllByUserId(userId: string): Promise<DocketDocument[]> {
+        return await this.docketModel.find({receiverId: userId}).exec();
     }
 
-    async findByTag(tag: Tag): Promise<DocketDocument[]> {
-        return await this.docketModel.find({tag}).exec();
+    async findByTag(tagId: string): Promise<DocketDocument[]> {
+        return await this.docketModel.find({tags: tagId}).exec();
     }
 
     async markDocketWithTag(docketId: string, tagId: string): Promise<DocketDocument> {

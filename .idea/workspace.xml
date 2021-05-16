@@ -2,34 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="71ca643a-a5b3-47a2-91e6-ee37d5dabe30" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/common/logger.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.spec.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.controller.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.module.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/file-loader/file-loader.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tag/tag.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/tag/tag.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app-config.module.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/local.strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/local.strategy.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.controller.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.module.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/mail/mail.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/user/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/docket.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/docket.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/tag.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/tag.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/user.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/user.schema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +116,7 @@
       <workItem from="1620823615523" duration="12395000" />
       <workItem from="1620905320920" duration="17023000" />
       <workItem from="1621095728739" duration="7353000" />
-      <workItem from="1621113168050" duration="7028000" />
+      <workItem from="1621113168050" duration="9521000" />
     </task>
     <servers />
   </component>

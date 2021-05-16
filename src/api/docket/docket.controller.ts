@@ -16,7 +16,7 @@ import {
 import {DocketService} from "./docket.service";
 import {AuthGuard} from "@nestjs/passport";
 import {Role, Roles} from "../../common/decorators/roles.decorator";
-import {Docket, DocketDocument, DocketFile, DocketViewModel,} from "../../model/docket.schema";
+import {Docket, DocketDocument, DocketFile} from "../../model/docket.schema";
 import {UserService} from "../../auth/user/user.service";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {CreateDocketDto} from "./interfaces";
@@ -60,7 +60,8 @@ export class DocketController {
             fileFilter: fileFilter,
         }),
     )
-    async create_app(@Req() req, @Res() res, @UploadedFile() file): Promise<IResponse> {
+    async import(@Req() req, @Res() res, @UploadedFile() file): Promise<IResponse> {
+        this.logger.log('**Import Docket Request')
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
@@ -73,12 +74,7 @@ export class DocketController {
             this.logger.error(`No File Error. User ${senderId} has sent this request`)
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
         }
-        const docketFile: DocketFile = {
-            encoding: file.encoding,
-            mimetype: file.mimetype,
-            buffer: Buffer.from(file.buffer),
-            size: file.size
-        }
+        const docketFile  = new DocketFile(file.encoding, file.mimetype, Buffer.from(file.buffer), file.size);
         const docket = await this.docketService.create(senderId, senderId, docketFile);
         if (docket.errors) {
             const message = "Docket could not be created! Contact docketStore support"
@@ -128,12 +124,7 @@ export class DocketController {
             result.data.message = "Receiver Id does not exist";
             return res.status(HttpStatus.BAD_REQUEST).json(result);
         }
-        const docketFile: DocketFile = {
-            encoding: file.encoding,
-            mimetype: file.mimetype,
-            buffer: Buffer.from(file.buffer),
-            size: file.size
-        }
+        const docketFile  = new DocketFile(file.encoding, file.mimetype, Buffer.from(file.buffer), file.size);
         const docket = await this.docketService.create(receiverId, senderId, docketFile);
         if (docket.errors) {
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -150,19 +141,17 @@ export class DocketController {
     @Roles(Role.APP_USER)
     @Get()
     async findAllByUser(@Req() req, @Res() res): Promise<any> {
+        this.logger.log("**Get All Dockets From User Request**")
         const result: IResponse = {
             status: HttpStatus.OK,
             success: false,
             data: {}
         }
         const user = req.user;
-        const dockets = await this.docketService.findAllByUser(user);
-        const docketsViewModel: DocketViewModel[] = []
-        dockets.forEach(docket => {
-            docketsViewModel.push(docket)
-        })
+        const dockets = await this.docketService.findAllByUserId(user._id);
+        this.logger.log(`Return ${dockets.length} Dockets!`)
         result.success = true;
-        result.data = docketsViewModel;
+        result.data = dockets;
         return res.status(HttpStatus.OK).json(result);
     }
 
@@ -181,7 +170,7 @@ export class DocketController {
             result.data = docketDocument
             return res.status(HttpStatus.OK).json(result);
         } else if (accept === "application/pdf") {
-            const readable: Readable = docketDocument.toReadable();
+            const readable: Readable = docketDocument.docketFile.toReadable();
             res.writeHead(200, {
                 'Content-Type': "application/pdf",
                 'Content-Length': readable.readableLength
@@ -199,14 +188,9 @@ export class DocketController {
             success: false,
             data: {}
         }
-        const tag = await this.tagService.findById(tagId);
-        const docketDocuments = await this.docketService.findByTag(tag);
-        var docketViewModels: DocketViewModel[] = [];
-        docketDocuments.forEach(docketDocument => {
-            docketViewModels.push(docketDocument)
-        })
+        const docketDocuments = await this.docketService.findByTag(tagId);
         result.success = true;
-        result.data = docketViewModels
+        result.data = docketDocuments
         return res.status(HttpStatus.OK).json(result);
     }
 

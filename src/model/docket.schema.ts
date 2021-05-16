@@ -4,21 +4,30 @@ import {Readable} from "stream";
 
 export type  DocketDocument = Docket & Document;
 
-export interface DocketViewModel {
-    createdAt: Date;
-    senderId: string;
-    receiverId: string;
-    tags: string[];
-    _id?: string
-}
 
 
-export interface DocketFile {
+export class DocketFile {
     encoding: string;
     mimetype: string;
     buffer: Buffer
     size: number
 
+
+    constructor(encoding: string, mimetype: string, buffer: Buffer, size: number) {
+        this.encoding = encoding;
+        this.mimetype = mimetype;
+        this.buffer = buffer;
+        this.size = size;
+    }
+
+    toReadable(): Readable {
+        const buffer = new Buffer(this.buffer.buffer);
+        const readable = new Readable()
+        readable._read = () => {} // _read is required but you can noop it
+        readable.push(buffer)
+        readable.push(null)
+        return readable;
+    }
 }
 
 @Schema()
@@ -40,14 +49,7 @@ export class Docket {
     }))
     docketFile: DocketFile;
 
-    toReadable(): Readable {
-        const buffer = new Buffer(this.docketFile.buffer.buffer);
-        const readable = new Readable()
-        readable._read = () => {} // _read is required but you can noop it
-        readable.push(buffer)
-        readable.push(null)
-        return readable;
-    }
+
 
     getTags() {
         return this.tags;
