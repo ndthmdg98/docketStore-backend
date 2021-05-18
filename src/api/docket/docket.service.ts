@@ -50,6 +50,10 @@ export class DocketService {
         return await this.docketModel.findByIdAndDelete(docketId).exec();
     }
 
+    async isDocketAlreadyInDatabase(docketId: string): Promise<boolean> {
+        return null;
+        //TODO check if fetched docket is already in database
+    }
 
 
 

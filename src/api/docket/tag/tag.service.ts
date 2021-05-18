@@ -1,8 +1,7 @@
 import {Injectable} from '@nestjs/common';
-import {TagDocument} from "../../model/tag.schema";
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
-import {CreateTagDto} from "./interfaces";
+import {CreateTagDto, TagDocument} from "../../../model/tag.schema";
 
 
 

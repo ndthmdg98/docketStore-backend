@@ -6,8 +6,8 @@ import {ApiTags} from "@nestjs/swagger";
 import {UserService} from "./user/user.service";
 import {AuthService} from "./auth.service";
 import {AuthGuard} from "@nestjs/passport";
-import {CreateAppUserDto, CreateB2BUserDto, IResponse} from "./interfaces";
-import {User} from "../model/user.schema";
+import {CreateAppUserDto, CreateB2BUserDto} from "../model/user.schema";
+import {IResponse} from "../interfaces";
 
 
 @ApiTags('auth')
@@ -36,18 +36,17 @@ export class AuthController {
             success: false,
             data: {}
         }
-        const user = await this.userService.findByUsername(login.username);
-        if (user) {
-            const userObject: User = user.toObject({getters: true});
-            if (userObject.status != "active") {
+        const userDocument = await this.userService.findByUsername(login.username);
+        if (userDocument) {
+            if (userDocument.status != "active") {
                 result.data.message = "Please verify first your mail";
                 this.logger.log("User login failed! User has to confirm his mail first.")
                 result.success = false;
                 return res.status(HttpStatus.OK).json(result);
             } else {
-                const success = await this.authService.validateUserWithPassword(user, login.password);
+                const success = await this.authService.validateUserWithPassword(userDocument, login.password);
                 if (success) {
-                    const token = this.authService.createToken(user);
+                    const token = this.authService.createToken(userDocument);
                     this.logger.log("User  succesfully logged in!")
                     result.data = token;
                     result.success = true;

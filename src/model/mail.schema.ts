@@ -1,5 +1,4 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {User, UserDocument, UserSchema} from "./user.schema";
 import {Document} from 'mongoose';
 import {ApiProperty} from "@nestjs/swagger";
 

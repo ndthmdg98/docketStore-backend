@@ -1,10 +1,10 @@
 import {Body, Controller, Get, HttpStatus, Logger, Param, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
-import {TagService} from "./tag.service";
 import {AuthGuard} from "@nestjs/passport";
-import {Role, Roles} from "../../common/decorators/roles.decorator";
-import {CreateTagDto} from "./interfaces";
-import {RolesGuard} from "../../common/guards/roles.guard";
-import {IResponse} from "../../auth/interfaces";
+import {RolesGuard} from "../../../common/guards/roles.guard";
+import {Role, Roles} from "../../../common/decorators/roles.decorator";
+import { TagService} from "./tag.service";
+import {CreateTagDto} from "../../../model/tag.schema";
+import {IResponse} from "../../../interfaces";
 
 
 

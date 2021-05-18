@@ -3,13 +3,14 @@ import {AuthenticationResult, PassportLocalModel} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
 import * as jwt from "jsonwebtoken";
 import {UserService} from "./user/user.service";
-import {User, UserDocument} from "../model/user.schema";
+import {CreateAppUserDto, CreateB2BUserDto, User, UserDocument} from "../model/user.schema";
 import {MailVerificationDto} from "../model/mail.schema";
-import {CreateAppUserDto, CreateB2BUserDto, IResponse, IToken, JwtPayloadInterface} from "./interfaces";
-import {TagService} from "../api/tag/tag.service";
 import {JwtConfig} from "./auth.module";
 import {MailService} from "./mail.service";
 import * as passport from "passport";
+import {TagService} from "../api/docket/tag/tag.service";
+import {IResponse, JwtPayloadInterface} from "../interfaces";
+import {IToken} from "../model/external-api-account.schema";
 
 
 @Injectable()
@@ -117,11 +118,17 @@ export class AuthService {
         }
         const user = await this.userService.findById(userId);
         if (user) {
+            if (user.status == "active") {
+                result.success = false;
+                result.status = HttpStatus.OK;
+                result.data.message = "E-Mail-Adress already confirmed";
+            }
             const mailVerification = await this.mailService.findOne({receiverId: userId});
             if (mailVerification) {
                 if (mailVerification.receiverId === userId) {
                     const valuesToUpdate = {status: 'active'};
                     await this.userService.updateByID(userId, valuesToUpdate);
+                    await this.tagService.createStandardTags(userId);
                 } else {
                     result.success = false;
                     result.status = HttpStatus.BAD_REQUEST;

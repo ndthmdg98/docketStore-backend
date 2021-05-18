@@ -2,15 +2,13 @@ import {PassportLocalModel, Model} from 'mongoose';
 import {Body, Delete, Get, Injectable, Param, Post, Put, UseGuards} from '@nestjs/common';
 import {debug} from 'console';
 import {InjectModel} from "@nestjs/mongoose";
-import {User, UserDocument} from "../../model/user.schema";
-import {CreateAppUserDto, CreateB2BUserDto} from "../interfaces";
-import {TagService} from "../../api/tag/tag.service";
+import {CreateAppUserDto, CreateB2BUserDto, User, UserDocument} from "../../model/user.schema";
 
 
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>, private tagService: TagService) {
+    constructor(@InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>) {
 
     }
 
@@ -56,7 +54,7 @@ export class UserService {
                     lastLogin: new Date()
                 }), userToCreate.password);
 
-            await this.tagService.createStandardTags(user._id);
+
             return user;
         }
     }
@@ -76,11 +74,6 @@ export class UserService {
 
     async findById(id: string): Promise<UserDocument> {
         return await this.userModel.findById(id).exec();
-    }
-
-
-    async updateOne(findUserDocumentOptions: object, valuesToChange: object): Promise<UserDocument | null> {
-        return Promise.resolve(undefined);
     }
 
     async updateByID(id: string, valuesToChange: object): Promise<UserDocument | null> {

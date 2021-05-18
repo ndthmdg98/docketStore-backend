@@ -13,17 +13,17 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import {DocketService} from "./docket.service";
-import {AuthGuard} from "@nestjs/passport";
-import {Role, Roles} from "../../common/decorators/roles.decorator";
-import {Docket, DocketDocument, DocketFile} from "../../model/docket.schema";
-import {UserService} from "../../auth/user/user.service";
-import {FileInterceptor} from "@nestjs/platform-express";
-import {CreateDocketDto} from "./interfaces";
 import {RolesGuard} from "../../common/guards/roles.guard";
-import {IResponse} from "../../auth/interfaces";
-import {Readable} from 'stream';
-import {TagService} from "../tag/tag.service";
+import {AuthGuard} from "@nestjs/passport";
+import {DocketService} from "./docket.service";
+import {TagService} from "./tag/tag.service";
+import {ExternalApiService} from "./external-api/external-api.service";
+import {UserService} from "../../auth/user/user.service";
+import {Role, Roles} from "../../common/decorators/roles.decorator";
+import {FileInterceptor} from "@nestjs/platform-express";
+import {CreateDocketDto, Docket, DocketDocument, DocketFile} from "../../model/docket.schema";
+import {Readable} from "stream";
+import {IResponse} from "../../interfaces";
 
 export const fileFilter = (req, file, callback) => {
     if (file.originalname.match(/\.(pdf)$/) || file.originalname.match(/\.(png)$/) || file.originalname.match(/\.(jpg)$/)) {
@@ -48,9 +48,35 @@ export class DocketController {
 
     constructor(private docketService: DocketService,
                 private tagService: TagService,
+                private externalAPIService: ExternalApiService,
                 private userService: UserService) {
 
     }
+
+    @Roles(Role.APP_USER)
+    @UseGuards(AuthGuard('jwt'))
+    @Post('fetch')
+    async fetch(@Req() req, @Res() res): Promise<IResponse> {
+        this.logger.log('**Fetch Dockets from external API´s Request')
+        const result: IResponse = {
+            status: HttpStatus.OK,
+            success: false,
+            data: {}
+        }
+
+        const userId: string = req.user._id
+        const dockets = await this.externalAPIService.fetchDocketsFromAllExternalAPIAccountsOfaUser(userId);
+        for (const docket of dockets) {
+            const isDocketAlreadyInDatabase = await this.docketService.isDocketAlreadyInDatabase(docket._id);
+            if (!isDocketAlreadyInDatabase) {
+
+            } else {
+                const createdDocket = await this.docketService.create(userId, userId, docket.docketFile);
+                return res.status(HttpStatus.OK).json(result)
+            }
+        }
+    }
+
 
     @Roles(Role.APP_USER)
     @UseGuards(AuthGuard('jwt'))
@@ -74,7 +100,7 @@ export class DocketController {
             this.logger.error(`No File Error. User ${senderId} has sent this request`)
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(result);
         }
-        const docketFile  = new DocketFile(file.encoding, file.mimetype, Buffer.from(file.buffer), file.size);
+        const docketFile = new DocketFile(file.encoding, file.mimetype, Buffer.from(file.buffer), file.size);
         const docket = await this.docketService.create(senderId, senderId, docketFile);
         if (docket.errors) {
             const message = "Docket could not be created! Contact docketStore support"
@@ -87,7 +113,7 @@ export class DocketController {
         const message = "Docket successfully created!";
         this.logger.log(message)
         result.status = HttpStatus.OK;
-        result.data.message =  message;
+        result.data.message = message;
         result.success = true
         return res.status(HttpStatus.OK).json(result);
     }
@@ -124,7 +150,7 @@ export class DocketController {
             result.data.message = "Receiver Id does not exist";
             return res.status(HttpStatus.BAD_REQUEST).json(result);
         }
-        const docketFile  = new DocketFile(file.encoding, file.mimetype, Buffer.from(file.buffer), file.size);
+        const docketFile = new DocketFile(file.encoding, file.mimetype, Buffer.from(file.buffer), file.size);
         const docket = await this.docketService.create(receiverId, senderId, docketFile);
         if (docket.errors) {
             result.status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -263,7 +289,9 @@ export class DocketController {
         return res.status(HttpStatus.OK).json(result);
     }
 
-    //TODO Endpoint für Kassenbelege zur weitergabe von Kassenbelegen
+
+
+
 
 
 }

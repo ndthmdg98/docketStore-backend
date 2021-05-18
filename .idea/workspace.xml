@@ -1,12 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="71ca643a-a5b3-47a2-91e6-ee37d5dabe30" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/api/docket/external-api/external-api.controller.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/docket/external-api/external-api.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/docket/external-api/external-api.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/docket/external-api/services/dm-api.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/docket/external-api/services/lidl-api.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/docket/external-api/services/rewe-api.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/interfaces.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/external-api-account.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/interfaces.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/interfaces.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.controller.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/tag/tag.controller.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/tag/tag.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.module.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/tag/tag.service.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/tag/tag.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/tag/tag.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/interfaces.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/local.strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/local.strategy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/mail.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/user/user.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/user/user.service.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/user/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user/user.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/docket.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/docket.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/mail.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/mail.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/tag.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/tag.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/user.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/user.schema.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +80,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/auth" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/api/docket" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -58,12 +93,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/api/docket" />
+      <recent name="$PROJECT_DIR$/src/api/external-api" />
+      <recent name="$PROJECT_DIR$/src/model" />
       <recent name="$PROJECT_DIR$/src/auth" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/../app/src/app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/auth" />
+      <recent name="$PROJECT_DIR$/src/api/docket/tag" />
+      <recent name="$PROJECT_DIR$/src/api/docket" />
+      <recent name="$PROJECT_DIR$/src/api/docket/external-api" />
+      <recent name="$PROJECT_DIR$/src/api/docket/services" />
+      <recent name="$PROJECT_DIR$/src/api/docket/controllers" />
     </key>
   </component>
   <component name="RunManager">
@@ -116,7 +157,13 @@
       <workItem from="1620823615523" duration="12395000" />
       <workItem from="1620905320920" duration="17023000" />
       <workItem from="1621095728739" duration="7353000" />
-      <workItem from="1621113168050" duration="9521000" />
+      <workItem from="1621113168050" duration="14078000" />
+      <workItem from="1621244457284" duration="9690000" />
+      <workItem from="1621259919786" duration="1413000" />
+      <workItem from="1621261379821" duration="20932000" />
+      <workItem from="1621328019239" duration="67000" />
+      <workItem from="1621328299111" duration="4093000" />
+      <workItem from="1621333415187" duration="1000" />
     </task>
     <servers />
   </component>
@@ -138,10 +185,9 @@
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/auth/auth.controller.ts</url>
-          <line>39</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="82" />
+          <url>file://$PROJECT_DIR$/src/api/docket/external-api/services/lidl-api.service.ts</url>
+          <line>35</line>
+          <option name="timeStamp" value="39" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

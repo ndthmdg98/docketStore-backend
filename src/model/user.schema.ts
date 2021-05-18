@@ -2,6 +2,74 @@ import * as passportLocalMongoose from 'passport-local-mongoose';
 import {Prop, raw, Schema, SchemaFactory} from "@nestjs/mongoose";
 import {PassportLocalDocument} from "mongoose";
 import {Role} from "../common/decorators/roles.decorator";
+import {ApiProperty} from "@nestjs/swagger";
+
+
+
+export class CreateAppUserDto {
+
+
+    @ApiProperty()
+    readonly username: string;
+
+    @ApiProperty()
+    readonly password: string;
+
+    @ApiProperty()
+    readonly contact: IContactInformation;
+
+    static instanceOf(object: any): object is ICreateAppUserDto {
+        return !CreateB2BUserDto.instanceOf(object);
+    }
+}
+
+
+
+interface ICreateAppUserDto{
+    username: string;
+    password: string;
+    contact: IContactInformation
+}
+
+
+interface ICreateB2BUserDto{
+    username: string;
+    password: string;
+    contact: IContactInformation
+    company: ICompanyInformation
+}
+
+
+
+
+
+
+
+
+
+export class CreateB2BUserDto {
+
+    @ApiProperty()
+    readonly username: string;
+
+    @ApiProperty()
+    readonly password: string;
+
+    @ApiProperty()
+    readonly contact: IContactInformation
+
+    @ApiProperty()
+    readonly company: ICompanyInformation
+
+    static  instanceOf(object: any): object is ICreateB2BUserDto {
+        return 'company' in object;
+    }
+
+    constructor() {
+    }
+
+
+}
 
 
 export interface IAdresse {
@@ -77,12 +145,17 @@ export class User {
     contact: IContactInformation;
 
 
-
-
-
-
-
-
+    constructor(userDocument: UserDocument) {
+        this.company = userDocument.company;
+        this.email = userDocument.email;
+        this.lastLogin = userDocument.lastLogin;
+        this.password = userDocument.password;
+        this.roles = userDocument.roles;
+        this.status = userDocument.status;
+        this.username = userDocument.username;
+        this._id = userDocument._id;
+        this.contact = userDocument.contact;
+    }
 }
 
 

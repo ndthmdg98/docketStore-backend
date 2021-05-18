@@ -16,7 +16,6 @@ export class MailService {
     constructor(
         @InjectModel('Mail') private readonly mailModel: Model<MailDocument>,
         @Inject('MAIL_CONFIG') private readonly MAIL_CONFIG: MailConfig,
-        @Inject('APP_CONFIG') private readonly APP_CONFIG: AppConfig,
         private readonly mailerService: MailerService,
     ) {
 

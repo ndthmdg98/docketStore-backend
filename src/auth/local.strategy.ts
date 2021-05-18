@@ -4,9 +4,8 @@ import {PassportLocalModel} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
 import {AuthService} from "./auth.service";
 import {Strategy} from "passport-local";
-import {User, UserDocument} from "../model/user.schema";
-import {IResponse} from "./interfaces";
 import {UserService} from "./user/user.service";
+import {IResponse} from "../interfaces";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

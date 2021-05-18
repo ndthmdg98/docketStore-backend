@@ -1,9 +1,9 @@
 import {Prop, raw, Schema, SchemaFactory} from "@nestjs/mongoose";
 import {Document} from 'mongoose';
 import {Readable} from "stream";
+import {ApiProperty} from "@nestjs/swagger";
 
 export type  DocketDocument = Docket & Document;
-
 
 
 export class DocketFile {
@@ -23,12 +23,22 @@ export class DocketFile {
     toReadable(): Readable {
         const buffer = new Buffer(this.buffer.buffer);
         const readable = new Readable()
-        readable._read = () => {} // _read is required but you can noop it
+        readable._read = () => {
+        } // _read is required but you can noop it
         readable.push(buffer)
         readable.push(null)
         return readable;
     }
 }
+
+
+
+export class CreateDocketDto {
+    @ApiProperty()
+    readonly receiverId: string;
+}
+
+
 
 @Schema()
 export class Docket {
@@ -49,6 +59,7 @@ export class Docket {
     }))
     docketFile: DocketFile;
 
+    _id: string;
 
 
     getTags() {
@@ -57,7 +68,7 @@ export class Docket {
 
     addTag(tagId: string) {
         if (this.tags.includes(tagId)) {
-            return ;
+            return;
         } else {
             this.tags.push(tagId)
 
@@ -70,6 +81,17 @@ export class Docket {
             this.tags.splice(index, 1);
         }
     }
+
+
+    constructor(docketDocument: DocketDocument) {
+        this.tags = docketDocument.tags;
+        this.createdAt = docketDocument.createdAt;
+        this.receiverId = docketDocument.receiverId;
+        this.senderId = docketDocument.senderId;
+        this.docketFile = docketDocument.docketFile;
+        this._id = docketDocument._id;
+    }
+
 }
 
 export const DocketSchema = SchemaFactory.createForClass(Docket);

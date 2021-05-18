@@ -15,13 +15,12 @@ import {AuthController} from "./auth.controller";
 import {UserModule} from "./user/user.module";
 import {MulterModule} from "@nestjs/platform-express";
 import {TagSchema} from "../model/tag.schema";
-import {TagService} from "../api/tag/tag.service";
-import {TagModule} from "../api/tag/tag.module";
 import {MailSchema} from "../model/mail.schema";
 import {MailerModule} from "@nestjs-modules/mailer";
 import {HandlebarsAdapter} from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import {MailService} from "./mail.service";
-import {APP_DI_CONFIG, AppConfig} from "../app.module";
+import {TagService} from "../api/docket/tag/tag.service";
+import {DocketModule} from "../api/docket/docket.module";
 
 
 export const JWT_DI_CONFIG: JwtConfig = {
@@ -46,9 +45,9 @@ export const MAIL_DI_CONFIG: MailConfig = {
 
 @Module({
     imports: [
-        TagModule,
         UserModule,
         PassportModule,
+        DocketModule,
         MongooseModule.forFeature([{name: 'Users', schema: UserSchema}]),
         MongooseModule.forFeature([{name: 'Tags', schema: TagSchema}]),
         MongooseModule.forFeature([{name: 'Mail', schema: MailSchema}]),
@@ -91,9 +90,9 @@ export const MAIL_DI_CONFIG: MailConfig = {
     controllers: [AuthController],
     providers: [
         AuthService,
+        TagService,
         LocalStrategy,
         JwtStrategy,
-        TagService,
         MailService,
         {
             provide: 'JWT_CONFIG',
@@ -112,19 +111,7 @@ export const MAIL_DI_CONFIG: MailConfig = {
 
 })
 export class AuthModule {
-    static forRoot(appConfig: AppConfig): DynamicModule {
-        return {
-            module: AuthModule,
-            providers: [ {
-                provide: 'APP_CONFIG',
-                useValue: appConfig
-            }],
-            exports: [ {
-                provide: 'APP_CONFIG',
-                useValue: appConfig
-            },],
-        };
-    }
+
 }
 
 
