@@ -1,13 +1,14 @@
 import {
     Body,
-    Controller, Get, HttpStatus, Logger, Param, Post, Req, Res, UseGuards,
+    Controller, Get, HttpStatus, Inject, Logger, Param, Post, Req, Res, UseGuards,
 } from '@nestjs/common';
 import {ApiTags} from "@nestjs/swagger";
-import {UserService} from "./user/user.service";
 import {AuthService} from "./auth.service";
 import {AuthGuard} from "@nestjs/passport";
-import {CreateAppUserDto, CreateB2BUserDto} from "../model/user.schema";
-import {IResponse} from "../interfaces";
+import {CreateAppUserDto, CreateB2BUserDto, User} from "../model/user.schema";
+import {UserService} from "./user.service";
+import {MailService} from "./mail.service";
+import {APIResponse} from "../interfaces";
 
 
 @ApiTags('auth')
@@ -16,70 +17,76 @@ export class AuthController {
 
     private logger = new Logger('AuthController');
 
-    constructor(private readonly userService: UserService,
-                private readonly authService: AuthService
+    constructor( private readonly userService: UserService,
+                 private readonly authService: AuthService,
+                  private readonly mailService: MailService
     ) {
     }
 
     @Post('/register')
     public async registerUser(@Res() res, @Body() createUserDto: CreateAppUserDto | CreateB2BUserDto): Promise<any> {
-        this.logger.log("**Register User Request**")
-        const result = await this.authService.registerUser(createUserDto);
-        return res.status(HttpStatus.OK).json(result);
+        const userExists = await this.userService.existsUsername(createUserDto.username)
+        if (userExists) {
+            return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
+        } else {
+            const user = await this.authService.registerUser(createUserDto);
+            if (user) {
+                const mailVerification = await this.mailService.create(user._id);
+                if (mailVerification) {
+                    const sentMail = await this.mailService.sendWelcomeEmail(user._id, user.username, user.firstName, mailVerification.code);
+                    if (sentMail) {
+                        return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
+                    }
+                } else {
+                    return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
+                }
+            } else {
+                return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
+            }
+        }
     }
 
     @Post('login')
-    public async login(@Res() res, @Body() login): Promise<IResponse> {
+    public async login(@Res() res, @Body() login): Promise<APIResponse> {
         this.logger.log("**Login Request**")
-        const result: IResponse = {
-            status: HttpStatus.OK,
-            success: false,
-            data: {}
-        }
-        const userDocument = await this.userService.findByUsername(login.username);
-        if (userDocument) {
-            if (userDocument.status != "active") {
-                result.data.message = "Please verify first your mail";
-                this.logger.log("User login failed! User has to confirm his mail first.")
-                result.success = false;
-                return res.status(HttpStatus.OK).json(result);
+        const userDocument = await this.userService.findByUsername(login.username)
+        if (!userDocument) {
+            return res.status(HttpStatus.UNAUTHORIZED).json(APIResponse.errorResponse(HttpStatus.UNAUTHORIZED))
+        } else {
+            if (!await this.userService.isUserActive(userDocument._id)) {
+                return res.status(HttpStatus.UNAUTHORIZED).json(APIResponse.errorResponse(HttpStatus.UNAUTHORIZED));
             } else {
                 const success = await this.authService.validateUserWithPassword(userDocument, login.password);
                 if (success) {
-                    const token = this.authService.createToken(userDocument);
-                    this.logger.log("User  succesfully logged in!")
-                    result.data = token;
-                    result.success = true;
+                    const token = this.authService.createToken(this.authService.createJwtPayload(userDocument));
                     res.cookie('accessToken', token, {maxAge: 360000, httpOnly: true, secure: true});
-                    return res.status(HttpStatus.OK).json(result);
+                    return res.status(HttpStatus.OK).json(APIResponse.successResponse(token));
                 } else {
-                    result.status = 401;
-                    result.data.message = "Username or Password wrong!";
-                    return res.status(HttpStatus.OK).json(result);
+                    return res.status(HttpStatus.UNAUTHORIZED).json(APIResponse.errorResponse(HttpStatus.UNAUTHORIZED));
                 }
             }
-        } else {
-            result.data.message = "Username or Password Wrong!";
-            result.status = HttpStatus.UNAUTHORIZED
-            this.logger.log("Username or Password Wrong!")
-            result.success = false;
-            return res.status(HttpStatus.OK).json(result);
         }
 
     }
 
+    @Get('/:user/:code')
+    async verifyAccount(@Req() req, @Param('user') userID: string, @Param('code') code: string, @Res() res) {
+        const userDocument = await this.userService.findById(userID);
+        if (await this.userService.isUserActive(userDocument._id)) {
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse({message: "Given Mail already confirmed!"}));
+        } else {
+            const success = await this.authService.verifyAccount(userID, code);
+            if (success) {
+                return res.status(HttpStatus.OK).json(APIResponse.successResponse({}));
+            } else {
+                return res.status(HttpStatus.OK).json(APIResponse.errorResponse(500));
+            }
+        }
+    }
 
     @Get('profile')
     @UseGuards(AuthGuard('jwt'))
-    getProfile(@Req() req) {
-        return req.user;
+    getProfile(@Req() req, @Res() res)  {
+        return res.status(HttpStatus.OK).json(APIResponse.successResponse(req.user)) ;
     }
-
-    @Get('/:user/:code')
-    async verifyAccount(@Param('user') userID: string, @Param('code') code: string, @Res() res) {
-        const result = await this.authService.verifyAccount(userID, code);
-        return res.status(HttpStatus.OK).json(result);
-    }
-
-
 }

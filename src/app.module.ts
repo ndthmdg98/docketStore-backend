@@ -1,12 +1,12 @@
 import {HttpModule, Module} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
-import {AuthModule, JwtConfig, MailConfig} from "./auth/auth.module";
 import {DocketModule} from "./api/docket/docket.module";
 import {MongooseModule} from "@nestjs/mongoose";
+import {AuthModule} from "./auth/auth.module";
 
 export const NETWORK_DI_CONFIG: NetworkConfig = {
-    baseHostUrl:  'http://localhost:3000',
+    baseHostUrl: 'http://localhost:3000',
     baseHostname: 'localhost',
     port: 3000,
 };
@@ -18,6 +18,7 @@ export const DATABASE_DI_CONFIG: DatabaseConfig = {
 }
 
 export const DATABASE_URL = `mongodb://${DATABASE_DI_CONFIG.hostname}/${DATABASE_DI_CONFIG.databaseName}`;
+export const DATABASE_URL_TEST = "mongodb://localhost/docketstore_test"
 export const APP_DI_CONFIG: AppConfig = {
     networkConfig: NETWORK_DI_CONFIG,
     databaseConfig: DATABASE_DI_CONFIG
@@ -25,12 +26,11 @@ export const APP_DI_CONFIG: AppConfig = {
 
 
 
-
 @Module({
     imports: [
         MongooseModule.forRoot(DATABASE_URL),
-        AuthModule,
         DocketModule,
+        AuthModule,
         HttpModule
     ],
     controllers: [AppController],
@@ -41,10 +41,11 @@ export const APP_DI_CONFIG: AppConfig = {
         },
 
     ],
+    exports: [],
 })
+
 export class AppModule {
 }
-
 
 
 export class AppConfig {

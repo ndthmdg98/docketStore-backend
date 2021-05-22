@@ -20,12 +20,6 @@ export interface ExternalAPI {
 }
 
 
-export interface IToken {
-     accessToken: string;
-     expiresIn?: number;
-     refreshToken?: string;
-}
-
 
 export const implementedExternalAPIs = new Map<number, string>([
     [1, "Rewe"],

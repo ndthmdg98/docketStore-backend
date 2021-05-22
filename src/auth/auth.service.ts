@@ -1,16 +1,12 @@
-import {HttpStatus, Inject, Injectable, Logger} from '@nestjs/common';
+import {Inject, Injectable, Logger} from '@nestjs/common';
 import {AuthenticationResult, PassportLocalModel} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
 import * as jwt from "jsonwebtoken";
-import {UserService} from "./user/user.service";
 import {CreateAppUserDto, CreateB2BUserDto, User, UserDocument} from "../model/user.schema";
-import {MailVerificationDto} from "../model/mail.schema";
 import {JwtConfig} from "./auth.module";
 import {MailService} from "./mail.service";
-import * as passport from "passport";
-import {TagService} from "../api/docket/tag/tag.service";
-import {IResponse, JwtPayloadInterface} from "../interfaces";
-import {IToken} from "../model/external-api-account.schema";
+import {UserService} from "./user.service";
+import {IToken, JwtPayloadInterface} from "../interfaces";
 
 
 @Injectable()
@@ -20,71 +16,27 @@ export class AuthService {
     constructor(
         private readonly mailService: MailService,
         private readonly userService: UserService,
-        private readonly tagService: TagService,
         @InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>,
         @Inject("JWT_CONFIG") private readonly JWT_CONFIG: JwtConfig
     ) {
     }
 
-    async registerUser(userToRegister: CreateAppUserDto | CreateB2BUserDto): Promise<IResponse> {
-        const result: IResponse = {
-            status: HttpStatus.OK,
-            success: false,
-            data: {message: ""}
-        }
-        const user = await this.userService.findOne({email: userToRegister.username});
-        if (user) {
-            const message = "User with given e-mail already registered!";
-            result.status = HttpStatus.BAD_REQUEST
-            result.data.message = message
-            this.logger.log(message);
-            return result;
+    async registerUser(userToRegister: CreateAppUserDto | CreateB2BUserDto): Promise<any> {
+        const user = await this.userService.createUser(userToRegister);
+        if (user && user._id) {
+            this.logger.log("User successfully created!");
+            return user;
         } else {
-            const user = await this.userService.createUser(userToRegister);
-            if (user.errors) {
-                const message = "User could not be created!";
-                result.status = HttpStatus.INTERNAL_SERVER_ERROR
-                result.data.message = message;
-                this.logger.log(message);
-                return result;
-            } else if (user && user._id) {
-                this.logger.log("User successfully created!");
-                let mailVerificationDto: MailVerificationDto = {
-                    receiverId: user._id,
-                    code: this.mailService.generateCode(10),
-                    dateCreated: new Date()
-                };
-                const mailVerification = await this.mailService.create(mailVerificationDto);
-                if (mailVerification.errors) {
-                    result.data.message = "Mail verification could not be created!";
-                    result.status = HttpStatus.INTERNAL_SERVER_ERROR
-                    return result;
-                } else if (mailVerification) {
-                    this.logger.log("Mail Database Object successfully created!");
-                    const sentMail = await this.mailService.sendWelcomeEmail(user._id, user.username, user.contact.firstName, mailVerificationDto.code);
-                    if (sentMail) {
-                        const message = "User successfully created! Please check your Mails"
-                        result.success = true;
-                        result.data.message = message;
-                        return result;
-                    } else {
-                        result.data.message = "Mail could not successfully sent!"
-                        result.success = false;
-                        return result;
-                    }
-                } else {
+            this.logger.log(user.errors);
 
-                }
-            }
+            return null;
         }
-
     }
 
 
-    async checkPassword(user: UserDocument, password: string) {
+    private async checkPassword(user: UserDocument, password: string): Promise<boolean> {
         const authenticationResult: AuthenticationResult = await user.authenticate(password);
         if (authenticationResult.error) {
-            this.logger.log("Username or Password Wrong!")
             return false;
         } else if (authenticationResult.user) {
             return true;
@@ -92,70 +44,48 @@ export class AuthService {
     }
 
 
-    login2() {
-        passport.serializeUser(function (user: UserDocument, done) {
-            done(null, user._id);
-        });
-    }
-
-    async validateUser(payload: JwtPayloadInterface): Promise<User> {
-        return await this.userService.findById(payload.id);
-    }
-
-    async validateUserWithPassword(user: UserDocument, pass: string): Promise<boolean> {
-            const success = await this.checkPassword(user, pass);
-            return success;
-        }
-
-
-
-
-    async verifyAccount(userId: string, code: string): Promise<IResponse> {
-        const result: IResponse = {
-            status: HttpStatus.OK,
-            success: true,
-            data: {message: "Your mail was succesfully accepted;"}
-        }
-        const user = await this.userService.findById(userId);
-        if (user) {
-            if (user.status == "active") {
-                result.success = false;
-                result.status = HttpStatus.OK;
-                result.data.message = "E-Mail-Adress already confirmed";
-            }
-            const mailVerification = await this.mailService.findOne({receiverId: userId});
-            if (mailVerification) {
-                if (mailVerification.receiverId === userId) {
-                    const valuesToUpdate = {status: 'active'};
-                    await this.userService.updateByID(userId, valuesToUpdate);
-                    await this.tagService.createStandardTags(userId);
-                } else {
-                    result.success = false;
-                    result.status = HttpStatus.BAD_REQUEST;
-                    result.data.message = "Error bad link";
-                }
+    async verifyAccount(userId: string, code: string): Promise<boolean> {
+        const mailVerification = await this.mailService.findOne({receiverId: userId});
+        if (mailVerification) {
+            if (mailVerification.receiverId === userId && mailVerification.code === code) {
+                return await this.userService.activateUser(userId);
+            } else {
+                return false;
             }
         } else {
-            result.success = false;
-            result.status = HttpStatus.BAD_REQUEST;
-            result.data.message = "Given user ID not found";
-
+            return false;
         }
-        return result;
     }
 
-    createToken(user: UserDocument): IToken {
+    createToken(jwtPayloadInterface: JwtPayloadInterface): IToken {
         const expiresIn = 3600;
         const accessToken = jwt.sign({
-            id: user._id,
-            username: user.username,
-            firstName: user.contact.firstName,
-            lastName: user.contact.lastName
+            id: jwtPayloadInterface.id,
+            username: jwtPayloadInterface.username,
+            firstName: jwtPayloadInterface.firstName,
+            lastName: jwtPayloadInterface.lastName
         }, this.JWT_CONFIG.jwtSecret, {expiresIn});
         return {
             expiresIn,
             accessToken,
         };
+    }
+
+    createJwtPayload(userDocument): JwtPayloadInterface {
+        return {
+            firstName: userDocument.firstName,
+            lastName: userDocument.lastName,
+            id: userDocument._id,
+            username: userDocument.username
+        }
+    }
+
+    async validateJwtToken(payload: JwtPayloadInterface): Promise<User> {
+        return await this.userService.findById(payload.id);
+    }
+
+    async validateUserWithPassword(user: UserDocument, pass: string): Promise<boolean> {
+        return await this.checkPassword(user, pass);
     }
 }
 

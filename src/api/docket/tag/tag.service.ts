@@ -1,7 +1,8 @@
-import {Injectable} from '@nestjs/common';
+import {HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {CreateTagDto, TagDocument} from "../../../model/tag.schema";
+import {APIResponse} from "../../../interfaces";
 
 
 
@@ -22,7 +23,7 @@ export class TagService  {
         return createdTagDocument.save();
     }
 
-    async findAllByUser(userId: string): Promise<TagDocument[]> {
+    async findAllByUserId(userId: string): Promise<TagDocument[]> {
         return this.tagModel.find({userId: userId}).exec();
     }
 
@@ -30,36 +31,15 @@ export class TagService  {
         return await this.tagModel.findById(tagId).exec();
     }
 
-    async updateById(tagId: string, valuesToChange: object): Promise<TagDocument> {
-        await this.tagModel.findByIdAndUpdate(tagId, valuesToChange).exec();
-        return await this.tagModel.findById(tagId).exec();
+    async deleteById(tagId: string): Promise<boolean> {
+        const deletedTag = await this.tagModel.findByIdAndDelete(tagId).exec();
+        return !!deletedTag;
+        
     }
 
-    async createStandardTags(userId: string): Promise<void> {
-        await this.create({tagName: "Archiviert", userId: userId}).then(result => {
-            if (result.errors) {
-                //TODO log errors
-            } else {
-
-            }
-        })
-
-        await this.create({tagName: "Garantie",userId: userId}).then(result => {
-            if (result.errors) {
-                //TODO log errors
-            } else {
-
-            }
-        })
-
-        await this.create({tagName: "Steuererklärung", userId: userId}).then(result => {
-            if (result.errors) {
-                //TODO log errors
-            } else {
-
-            }
-        })
+    async rename(tagId: string, newTagName: string): Promise<boolean> {
+        const renamedTagDocument = await this.tagModel.findByIdAndUpdate(tagId, {tagName: newTagName});
+        const renamedTag = renamedTagDocument.toObject();
+        return renamedTag.tagName == newTagName;
     }
-
-
 }

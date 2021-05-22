@@ -1,6 +1,7 @@
 import {HttpService, Injectable} from '@nestjs/common';
-import {ExternalAPI, ExternalAPIAccount, IToken} from "../../../../model/external-api-account.schema";
+import {ExternalAPI, ExternalAPIAccount} from "../../../../model/external-api-account.schema";
 import {Docket} from "../../../../model/docket.schema";
+import {IToken} from "../../../../interfaces";
 
 @Injectable()
 export class DmApiService implements ExternalAPI {

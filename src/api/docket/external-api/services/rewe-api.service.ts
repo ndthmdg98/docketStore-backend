@@ -1,6 +1,6 @@
 import {HttpService, Injectable} from '@nestjs/common';
 import {Docket} from "../../../../model/docket.schema";
-import {ExternalAPI, ExternalAPIAccount, IToken} from "../../../../model/external-api-account.schema";
+import {ExternalAPI, ExternalAPIAccount} from "../../../../model/external-api-account.schema";
 import {generators, Issuer} from "openid-client";
 
 const puppeteer = require('puppeteer');

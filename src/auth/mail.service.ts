@@ -6,7 +6,6 @@ import {InjectModel} from "@nestjs/mongoose";
 import {MailerService} from "@nestjs-modules/mailer";
 import {MailConfig} from "./auth.module";
 import {MailDocument, MailVerificationDto} from "../model/mail.schema";
-import {AppConfig} from "../app.module";
 
 @Injectable()
 export class MailService {
@@ -14,9 +13,9 @@ export class MailService {
 
     private logger = new Logger('MailService');
     constructor(
-        @InjectModel('Mail') private readonly mailModel: Model<MailDocument>,
+        @InjectModel('Mails') private readonly mailModel: Model<MailDocument>,
         @Inject('MAIL_CONFIG') private readonly MAIL_CONFIG: MailConfig,
-        private readonly mailerService: MailerService,
+        @Inject('MailerService')private readonly mailerService: MailerService,
     ) {
 
     }
@@ -61,28 +60,15 @@ export class MailService {
         return await this.mailModel.findById(ID).exec();
     }
 
-    async create(mailVerificationDto: MailVerificationDto): Promise<MailDocument> {
+    async create(userId: string): Promise<any> {
+        const mailVerificationDto = new MailVerificationDto(userId, this.generateCode(10));
         const createdMailVerification = new this.mailModel(mailVerificationDto);
-        return await createdMailVerification.save();
-    }
-
-    async update(ID: string, newValue: MailDocument): Promise<MailDocument> {
-        const mail_verification = await this.mailModel.findById(ID).exec();
-        if (!
-            mail_verification._id
-        ) {
-            debug('mail not found');
-        }
-
-        await this.mailModel.findByIdAndUpdate(ID, newValue).exec();
-        return await this.mailModel.findById(ID).exec();
-    }
-
-    async delete(ID: string): Promise<MailDocument> {
-        try {
-            return await this.mailModel.findByIdAndRemove(ID).exec();
-        } catch (err) {
-            debug(err);
+        const mailVerification =  await createdMailVerification.save();
+        if (mailVerification.errors) {
+            this.logger.log(mailVerification.errors);
+            return null;
+        } else {
+            return mailVerification;
         }
     }
 
@@ -96,9 +82,7 @@ export class MailService {
         return result;
     }
 
-    public static generateCode(length: number): string {
-        return this.generateCode(length);
-    }
+
 
 
 }

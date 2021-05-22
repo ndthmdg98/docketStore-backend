@@ -7,7 +7,7 @@ import {ReweApiService} from "./services/rewe-api.service";
 import {
     CreateExternalAPIAccountDto,
     ExternalAPIAccount,
-    ExternalAPIAccountDocument, implementedExternalAPIs,
+    ExternalAPIAccountDocument,
 } from "../../../model/external-api-account.schema";
 import {Docket} from "../../../model/docket.schema";
 

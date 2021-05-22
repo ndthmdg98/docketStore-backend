@@ -8,8 +8,12 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
   },
+  "transformIgnorePatterns": [
+    "node_modules/(?!variables/.*)"
+  ],
+  "preset": "ts-jest",
   "moduleNameMapper": {
     "@app/template/(.*)": "<rootDir>/../libs/template/src/$1",
     "@app/template": "<rootDir>/../libs/template/src"

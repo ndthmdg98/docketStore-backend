@@ -1,6 +1,6 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
-import {Logger} from "@nestjs/common";
+import {Logger, ValidationPipe} from "@nestjs/common";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {cors: true, logger: new Logger()});
@@ -22,6 +22,7 @@ async function bootstrap() {
         // Pass to next layer of middleware
         next();
     });
+    app.useGlobalPipes(new ValidationPipe());
     await app.listen(3000);
 }
 

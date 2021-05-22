@@ -1,10 +1,10 @@
-import {Body, Controller, Get, HttpStatus, Logger, Param, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpStatus, Logger, Param, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
 import {AuthGuard} from "@nestjs/passport";
 import {RolesGuard} from "../../../common/guards/roles.guard";
 import {Role, Roles} from "../../../common/decorators/roles.decorator";
 import { TagService} from "./tag.service";
 import {CreateTagDto} from "../../../model/tag.schema";
-import {IResponse} from "../../../interfaces";
+import {APIResponse} from "../../../interfaces";
 
 
 
@@ -16,43 +16,62 @@ export class TagController {
     constructor(private tagService: TagService) {
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Roles(Role.APP_USER)
     @Post()
-    async create(@Req() req, @Res() res, @Body() tagName: CreateTagDto): Promise<any> {
-        const createTagDto: CreateTagDto = {userId: req.user._id, tagName: tagName.tagName};
-        await this.tagService.create(createTagDto).then(tag => {
-            return res.status(HttpStatus.OK).json(tag);
-        })
+    async create(@Req() req, @Res() res, @Body() tagDto: CreateTagDto): Promise<APIResponse> {
+        if (!tagDto.tagName || tagDto.tagName.length == 0){
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST))
+        }
+        const createdTagDto = new CreateTagDto( req.user._id, tagDto.tagName);
+        const createdTag = await this.tagService.create(createdTagDto);
+        if (createdTag) {
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse(createdTag._id))
+        }
+        this.logger.log(createdTag.errors);
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR))
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Roles(Role.APP_USER)
     @Get()
-    async findAllByUser(@Req() req, @Res() res): Promise<IResponse> {
-        const result: IResponse = {
-            status: HttpStatus.OK,
-            success: false,
-            data: {}
-        }
-        const tags = await this.tagService.findAllByUser(req.user);
-        result.success = true;
-        result.data = tags;
-        return res.status(HttpStatus.OK).json(result);
+    async findAllByUserId(@Req() req, @Res() res): Promise<APIResponse> {
+        const tags = await this.tagService.findAllByUserId(req.user._id);
+        return res.status(HttpStatus.OK).json(APIResponse.successResponse(tags));
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Roles(Role.APP_USER)
     @Get(':id')
     async findById(@Req() req, @Res() res, @Param('id') id: string): Promise<any> {
-        await this.tagService.findById(id).then(tags => {
-            return res.status(HttpStatus.OK).json(tags);
-        })
+        const tag = await this.tagService.findById(id);
+        if (tag) {
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse(tag));
+        }
+        return res.status(HttpStatus.NOT_FOUND).json(APIResponse.errorResponse(HttpStatus.NOT_FOUND));
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Roles(Role.APP_USER)
-    @Put(':id')
-    async updateById(@Req() req, @Res() res, @Param('id') id: string, @Body() valuesToChange: object): Promise<any> {
-        await this.tagService.updateById(id, valuesToChange).then(tags => {
-            return res.status(HttpStatus.OK).json(tags);
-        })
+    @Put(':id/')
+    async rename(@Req() req, @Res() res, @Param('id') id: string, @Body() newTagName: string): Promise<any> {
+        const success = await this.tagService.rename(id, newTagName);
+        if (success) {
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse());
+        }
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR))
+
+    }
+    @UseGuards(AuthGuard('jwt'))
+    @Roles(Role.APP_USER)
+    @Delete(':id/')
+    async delete(@Req() req, @Res() res, @Param('id') id: string, ): Promise<any> {
+        const success = await this.tagService.deleteById(id);
+        if (success) {
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse());
+        }
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR))
+
     }
 
 

@@ -11,6 +11,12 @@ export class MailVerificationDto {
     @ApiProperty()
     readonly dateCreated: Date;
 
+
+    constructor(receiverId: string, code: string) {
+        this.receiverId = receiverId;
+        this.code = code;
+        this.dateCreated = new Date();
+    }
 }
 export type MailDocument = Mail & Document;
 

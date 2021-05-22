@@ -3,117 +3,200 @@ import {Prop, raw, Schema, SchemaFactory} from "@nestjs/mongoose";
 import {PassportLocalDocument} from "mongoose";
 import {Role} from "../common/decorators/roles.decorator";
 import {ApiProperty} from "@nestjs/swagger";
-
+import * as mongoose from "mongoose";
+import {IsEmail, IsNotEmpty, IsPhoneNumber, MinLength} from "class-validator";
 
 
 export class CreateAppUserDto {
 
+    @ApiProperty()
+    username: string;
 
     @ApiProperty()
-    readonly username: string;
+    password: string;
 
     @ApiProperty()
-    readonly password: string;
+    firstName: string;
 
     @ApiProperty()
-    readonly contact: IContactInformation;
+    lastName: string;
 
-    static instanceOf(object: any): object is ICreateAppUserDto {
+    @ApiProperty()
+    phoneNumber: string;
+
+
+    static instanceOf(object: any): object is CreateAppUserDto {
         return !CreateB2BUserDto.instanceOf(object);
     }
+
+    constructor(username: string, password: string, firstName: string, lastName: string, phoneNumber: string) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+    }
 }
-
-
-
-interface ICreateAppUserDto{
-    username: string;
-    password: string;
-    contact: IContactInformation
-}
-
-
-interface ICreateB2BUserDto{
-    username: string;
-    password: string;
-    contact: IContactInformation
-    company: ICompanyInformation
-}
-
-
-
-
-
-
-
 
 
 export class CreateB2BUserDto {
 
+
     @ApiProperty()
+    @IsEmail()
     readonly username: string;
 
     @ApiProperty()
+    @MinLength(10, {
+        message: 'Password is too short',
+    })
     readonly password: string;
 
     @ApiProperty()
-    readonly contact: IContactInformation
+    @IsNotEmpty({
+        message: 'No FirstName given',
+    })
+    firstName: string;
 
+    @IsNotEmpty({
+        message: 'No lastName given',
+    })
     @ApiProperty()
-    readonly company: ICompanyInformation
+    lastName: string;
 
-    static  instanceOf(object: any): object is ICreateB2BUserDto {
+    @IsPhoneNumber("DE",  {
+        message: 'No valid phone number',
+    })
+    @ApiProperty()
+    phoneNumber: string;
+
+    @IsEmail({},{
+        message: 'No valid email',
+    })
+    @ApiProperty()
+    contactEmail: string;
+
+    @IsNotEmpty({
+        message: 'No company name given',
+    })
+    @ApiProperty()
+    companyName: string;
+
+    @IsNotEmpty({
+        message: 'No company category given',
+    })
+    @ApiProperty()
+    category: string;
+
+    @IsNotEmpty({
+        message: 'No ustid given',
+    })
+    @ApiProperty()
+    ustid: string;
+
+    @IsNotEmpty({
+        message: 'No street given',
+    })
+    @ApiProperty()
+    street: string;
+
+    @IsNotEmpty({
+        message: 'No housenumber given',
+    })
+    @ApiProperty()
+    housenumber: string;
+
+    @IsNotEmpty({
+        message: 'No city given',
+    })
+    @ApiProperty()
+    city: string;
+    @IsNotEmpty()
+
+    @IsNotEmpty({
+        message: 'No zipcode given',
+    })
+    @ApiProperty()
+    zipcode: string;
+
+    @IsNotEmpty({
+        message: 'country given',
+    })
+    @ApiProperty()
+    country: string;
+
+
+
+    static instanceOf(object: any): object is CreateB2BUserDto {
         return 'company' in object;
     }
 
-    constructor() {
+
+    constructor(username: string, password: string, firstName: string, lastName: string, phoneNumber: string, contactEmail: string, companyName: string, category: string, ustid: string, street: string, housenumber: string, city: string, zipcode: string, country: string) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.contactEmail = contactEmail;
+        this.companyName = companyName;
+        this.category = category;
+        this.ustid = ustid;
+        this.street = street;
+        this.housenumber = housenumber;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.country = country;
     }
-
-
 }
 
-
-export interface IAdresse {
+@Schema()
+export class Adresse {
+    @Prop()
     street: string;
+    @Prop()
     housenumber: string;
+    @Prop()
     city: string;
+    @Prop()
     zipcode: string;
+    @Prop()
     country: string;
+
+
+    constructor(street: string, housenumber: string, city: string, zipcode: string, country: string) {
+        this.street = street;
+        this.housenumber = housenumber;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.country = country;
+    }
 }
 
-export interface ICompanyInformation {
+@Schema()
+export class CompanyInformation {
+
+    @Prop()
     companyName: string;
-    companyImagePath: string;
+    @Prop()
     category: string;
+    @Prop()
     ustid: string;
-    adresse: IAdresse;
-}
+    @Prop([Adresse])
+    adresse: Adresse;
 
-export interface IContactInformation {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    contactEmail: string;
+
+    constructor(companyName: string, category: string, ustid: string, adresse: Adresse) {
+        this.companyName = companyName;
+        this.category = category;
+        this.ustid = ustid;
+        this.adresse = adresse;
+    }
 }
 
 
 @Schema()
 export class User {
-
-    @Prop(raw({
-            companyName: {type: String},
-            companyImagePath:  {type: String},
-            category:  {type: String},
-            ustid:  {type: String},
-            adresse:  raw({
-                street: String,
-                housenumber: String,
-                city: String,
-                zipcode: String,
-                country: String,
-            })
-        })
-    )
-    company: ICompanyInformation;
 
     @Prop()
     email: string;
@@ -124,7 +207,7 @@ export class User {
     @Prop()
     password: string;
 
-    @Prop()
+    @Prop([String])
     roles: Role[];
 
     @Prop()
@@ -136,33 +219,24 @@ export class User {
 
     _id: string;
 
-    @Prop(raw({
-        firstName: String,
-        lastName: String,
-        phoneNumber: String,
-        contactEmail: String,
-    }))
-    contact: IContactInformation;
+    @Prop()
+    firstName: string;
+
+    @Prop()
+    lastName: string;
+
+    @Prop()
+    phoneNumber: string;
+
+    @Prop([CompanyInformation]
+    )
+    company: CompanyInformation;
 
 
-    constructor(userDocument: UserDocument) {
-        this.company = userDocument.company;
-        this.email = userDocument.email;
-        this.lastLogin = userDocument.lastLogin;
-        this.password = userDocument.password;
-        this.roles = userDocument.roles;
-        this.status = userDocument.status;
-        this.username = userDocument.username;
-        this._id = userDocument._id;
-        this.contact = userDocument.contact;
-    }
 }
 
 
 export type UserDocument = User & PassportLocalDocument;
 export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(passportLocalMongoose);
-UserSchema.methods.isActive = function isActive () {
-    // @ts-ignore
-    return ("status" in this && this.status == "active")
-};
+

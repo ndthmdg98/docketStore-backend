@@ -13,6 +13,10 @@ export class CreateTagDto {
     readonly userId: string;
 
 
+    constructor(userId: string, tagName: string) {
+        this.userId = userId;
+        this.tagName = tagName;
+    }
 }
 
 

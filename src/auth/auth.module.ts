@@ -1,6 +1,4 @@
 import {
-    DynamicModule,
-    Inject,
     Module,
 } from '@nestjs/common';
 
@@ -12,15 +10,12 @@ import {LocalStrategy} from "./local.strategy";
 import {JwtStrategy} from "./jwt-strategy.service";
 import {AuthService} from "./auth.service";
 import {AuthController} from "./auth.controller";
-import {UserModule} from "./user/user.module";
-import {MulterModule} from "@nestjs/platform-express";
-import {TagSchema} from "../model/tag.schema";
 import {MailSchema} from "../model/mail.schema";
 import {MailerModule} from "@nestjs-modules/mailer";
 import {HandlebarsAdapter} from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import {MailService} from "./mail.service";
-import {TagService} from "../api/docket/tag/tag.service";
 import {DocketModule} from "../api/docket/docket.module";
+import {UserService} from "./user.service";
 
 
 export const JWT_DI_CONFIG: JwtConfig = {
@@ -38,22 +33,12 @@ export const MAIL_DI_CONFIG: MailConfig = {
     authenticationHostname: "http://localhost:3000/auth"
 };
 
-
-
-
-
-
 @Module({
     imports: [
-        UserModule,
         PassportModule,
         DocketModule,
         MongooseModule.forFeature([{name: 'Users', schema: UserSchema}]),
-        MongooseModule.forFeature([{name: 'Tags', schema: TagSchema}]),
-        MongooseModule.forFeature([{name: 'Mail', schema: MailSchema}]),
-        MulterModule.register({
-            dest: './uploads',
-        }),
+        MongooseModule.forFeature([{name: 'Mails', schema: MailSchema}]),
         JwtModule.register({
             secret: JWT_DI_CONFIG.jwtSecret,
             signOptions: {expiresIn: JWT_DI_CONFIG.expiresIn},
@@ -90,7 +75,7 @@ export const MAIL_DI_CONFIG: MailConfig = {
     controllers: [AuthController],
     providers: [
         AuthService,
-        TagService,
+        UserService,
         LocalStrategy,
         JwtStrategy,
         MailService,
@@ -103,11 +88,7 @@ export const MAIL_DI_CONFIG: MailConfig = {
             useValue: MAIL_DI_CONFIG
         }
     ],
-    exports: [
-        AuthService,
-        MongooseModule.forFeature([{name: 'Users', schema: UserSchema}]),
-        MongooseModule.forFeature([{name: 'Tags', schema: TagSchema}])
-    ],
+    exports: [],
 
 })
 export class AuthModule {
@@ -129,5 +110,15 @@ export class MailConfig {
     password: string;
     senderDisplayHostname: string;
     authenticationHostname: string;
+
+
+    constructor(hostname: string, port: number, username: string, password: string, senderDisplayHostname: string, authenticationHostname: string) {
+        this.hostname = hostname;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+        this.senderDisplayHostname = senderDisplayHostname;
+        this.authenticationHostname = authenticationHostname;
+    }
 }
 

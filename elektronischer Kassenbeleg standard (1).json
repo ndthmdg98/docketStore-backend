@@ -1,0 +1,113 @@
+{
+  "version": " 1 . 0 . 0",
+  "type": "INVOICE",
+  "cash_register": {
+    "serial_number": "Q345/98Z"
+  },
+  "head": {
+    "id": "45130a36 - 29ed - 4e96 - 817b - e01d02087d14",
+    "number": "2020 / 1001",
+    "date": "2020 - 08 - 10T10: 51: 33.7892765 + 00: 00",
+    "delivery_period_start": "2020 - 08 - 07",
+    "delivery_period_end": "2020 - 08 - 08",
+    "seller": {
+      "name": "Muster GmbH",
+      "tax_number": "123 / 456 / 789",
+      "tax_exemption": true,
+      "tax_exemption_note": "Umsatzsteuerfreie Leistungen gemäß §19 UStG",
+      "address": {
+        "street": "Heidestraße 17",
+        "postal_code": "51147",
+        "city": "Köln",
+        "country_code": "DEU"
+      }
+    },
+    "buyer_text": "Erika Mustermann,Heidestraße 17, 51147 Köln",
+    "buyer": {
+      "customer_number": "K1298",
+      "name": "Erika Mustermann",
+      "tax_number": "DE987654321",
+      "address": {
+        " street": "Heidestraße 17",
+        " postal_code": "51147",
+        " city": "Köln",
+        " country_code": "DEU"
+      }
+    }
+  },
+  "data": {
+    "currency": "EUR",
+    "full_amount_incl_vat": 10.49,
+    "payment_types ": [
+      {
+        "name": "BAR",
+        "amount": 10.49,
+        "foreign_amount": 12.33,
+        "foreign_currency": "USD"
+      }
+    ],
+    "vat_amounts": [
+      {
+        "percentage": 19,
+        "incl_vat": 10.49,
+        "excl_vat": 8.82,
+        "vat": 1.67
+      }
+    ],
+    "lines": [
+      {
+        "text": "Regenjacke",
+        "additional_text": "B - Ware",
+        "vat_amounts": [
+          {
+            "percentage": 19.0,
+            "incl_vat": 10.49
+          },
+          {
+            "percentage": 19.0,
+            "excl_vat": 8.82,
+            "vat": 1.67
+          }
+        ],
+        "item": {
+          "number": "0815",
+          "gtin": "4013595313208",
+          "quantity": 1,
+          "quantity_measure": "Stück",
+          "price_per_unit": 10.49
+        },
+        "delivery_period_start ": "2020 - 08 - 07",
+        "delivery_period_end": "2020 - 08 - 08"
+      }
+    ]
+  },
+  "security": {
+    "tse": {
+      "serial_number": "623323B6C170DF2200...8F3A78E5BA7C4BA60B",
+      "signature_algorithm": "ecdsa - plain - SHA384",
+      "log_time_format": "unixTime",
+      "certificate": "LS0tLS...S0tCg ==",
+      "timestamp_start": "2020-08-10T10:51:33.8049447+00:00",
+      "timestamp_end": "2020-08-10T10:51:33.8049447+00:00",
+      "first_order": "2020-08-10T10:51:33.8049447+00:00",
+      "transaction_number": 50,
+      "signature_number": 121,
+      "process_type": "Kassenbeleg - V1",
+      "process_data": "Beleg^42.31_16.26_0.00_0.00_0.00^58.57: Bar",
+      "signature": "AjEGS...dhRitb"
+    }
+  },
+  "misc": {
+    "logo": {
+      "content_type": "image / png",
+      "content": ""
+    },
+    "footer_text": "Bitte beachten Sie auch unsere Sonderangebote!",
+    "additional_receipts": [
+      {
+        "content_type": "text / plain",
+        "content": "** EC - Kundenbeleg **  \n Muster GmbH \n..."
+      }
+    ]
+  }
+}

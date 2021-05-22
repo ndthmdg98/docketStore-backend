@@ -1,13 +1,22 @@
-import {Injectable} from '@nestjs/common';
+import {HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {Docket, DocketDocument, DocketFile} from "../../model/docket.schema";
+import {UserDocument} from "../../model/user.schema";
+import {Readable} from "stream";
 
 @Injectable()
 export class DocketService {
 
     constructor(@InjectModel('Dockets') private  docketModel: Model<DocketDocument>,
+                @InjectModel('Users') private  userModel: Model<UserDocument>,
     ) {
+
+    }
+
+    async deleteById(docketId: string): Promise<boolean> {
+        const result = await this.docketModel.findByIdAndDelete(docketId).exec();
+        return !!result;
 
     }
 
@@ -23,19 +32,45 @@ export class DocketService {
         return await this.docketModel.find({tags: tagId}).exec();
     }
 
-    async markDocketWithTag(docketId: string, tagId: string): Promise<DocketDocument> {
-        const docket = await this.findById(docketId);
-        docket.addTag(tagId);
-        return await this.updateById(docketId, {tags: docket.getTags()})
+    async markDocketWithTag(docketId: string, tagId: string): Promise<boolean> {
+        const docketDocument = await this.findById(docketId);
+        const newlyTaggedDocket = this.addTag(docketDocument, tagId);
+        const updatedDocketDocument = await this.updateById(docketId, {tags: newlyTaggedDocket.tags});
+        return updatedDocketDocument.tags.includes(tagId);
+
+
     }
 
-    async unmarkDocketWithTag(docketId: string, tagId: string): Promise<DocketDocument> {
-        const docket = await this.findById(docketId);
-        docket.removeTag(tagId);
-        return await this.updateById(docketId, {tags: docket.getTags()})
+    async unmarkDocketWithTag(docketId: string, tagId: string): Promise<boolean> {
+        const docketDocument = await this.findById(docketId);
+        const docketWithRemovedTag = this.removeTag(docketDocument, tagId);
+        const updatedDocketDocument = await this.updateById(docketId, {tags: docketWithRemovedTag.tags});
+        return !updatedDocketDocument.tags.includes(tagId);
+
     }
 
-    async create(receiverId: string, senderId: string, docketFile: DocketFile): Promise<DocketDocument> {
+    removeTag(docket: DocketDocument, tagId: string): DocketDocument {
+        const index = docket.tags.indexOf(tagId, 0)
+        if (index > -1) {
+            docket.tags.splice(index, 1);
+        }
+        return docket
+    }
+
+    addTag(docket: DocketDocument, tagId: string): DocketDocument {
+        if (docket.tags.includes(tagId)) {
+            return docket;
+        } else {
+            docket.tags.push(tagId)
+        }
+        return docket
+    }
+
+    async create(receiverId: string, senderId: string, docketFile: DocketFile): Promise<DocketDocument | null> {
+        const receiver = await this.userModel.findById(receiverId);
+        if (!receiver) {
+            return null;
+        }
         const createdDocket = new this.docketModel({
             createdAt: new Date(),
             receiverId: receiverId,
@@ -46,9 +81,7 @@ export class DocketService {
         return createdDocket.save();
     }
 
-    async deleteById(docketId: string): Promise<Docket> {
-        return await this.docketModel.findByIdAndDelete(docketId).exec();
-    }
+
 
     async isDocketAlreadyInDatabase(docketId: string): Promise<boolean> {
         return null;
@@ -56,8 +89,17 @@ export class DocketService {
     }
 
 
-
     private async updateById(docketId: string, valuesToChange: object): Promise<DocketDocument> {
         return await this.docketModel.findByIdAndUpdate(docketId, valuesToChange).exec();
+    }
+
+    toReadable(docketFile: DocketFile): Readable {
+            const buffer = new Buffer(docketFile.buffer);
+            const readable = new Readable()
+            readable._read = () => {
+            } // _read is required but you can noop it
+            readable.push(buffer)
+            readable.push(null)
+            return readable;
     }
 }
