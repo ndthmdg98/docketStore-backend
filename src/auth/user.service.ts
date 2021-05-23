@@ -34,21 +34,12 @@ export class UserService {
             return await this.userModel.register(new this.userModel(
                 {
                     username: userToCreate.username,
+                    email: userToCreate.username,
                     password: userToCreate.password,
                     firstName: userToCreate.firstName,
                     lastName: userToCreate.lastName,
                     phoneNumber: userToCreate.phoneNumber,
                     contactEmail: userToCreate.contactEmail,
-                    companyName: userToCreate.companyName,
-                    category: userToCreate.category,
-                    ustid: userToCreate.ustid,
-                    street: userToCreate.street,
-                    housenumber: userToCreate.housenumber,
-                    city: userToCreate.city,
-                    zipcode: userToCreate.zipcode,
-                    country: userToCreate.country,
-
-                    email: userToCreate.username,
                     company: company,
                     status: "pending",
                     roles: ['b2b_user'],
@@ -62,6 +53,7 @@ export class UserService {
                     firstName: userToCreate.firstName,
                     lastName: userToCreate.lastName,
                     phoneNumber: userToCreate.phoneNumber,
+                    company: null,
                     status: "pending",
                     roles: ['app_user'],
                     // @ts-ignore

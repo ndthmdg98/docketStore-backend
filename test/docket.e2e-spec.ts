@@ -3,17 +3,16 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {ExecutionContext, HttpModule, INestApplication, ValidationPipe} from '@nestjs/common';
 import {MongooseModule} from "@nestjs/mongoose";
 import {APP_DI_CONFIG, AppModule, DATABASE_URL, DATABASE_URL_TEST} from "../src/app.module";
-import {CreateAppUserDto, CreateB2BUserDto, ICreateAppUserDto, UserSchema} from "../src/model/user.schema";
-import {MailService} from "../src/auth/mail.service";
-import {AuthModule, JWT_DI_CONFIG, MAIL_DI_CONFIG} from "../src/auth/auth.module";
+import {CreateAppUserDto, CreateB2BUserDto} from "../src/model/user.schema";
+import {MailVerificationService} from "../src/auth/mail-verification.service";
+import {AuthModule, } from "../src/auth/auth.module";
 import {MongoClient} from "mongodb";
 import {DocketModule} from "../src/api/docket/docket.module";
 import {AppController} from "../src/app.controller";
 import {AppService} from "../src/app.service";
 import {UserService} from "../src/auth/user.service";
 import * as fs from "fs";
-import {response} from "express";
-import exp = require("constants");
+import {createAppUserDto, createB2BUserDto, loginAppDto, loginB2BDto} from "../src/utils/mocks/auth.mocks";
 
 describe('Docket API endpoints testing (e2e)', () => {
 
@@ -48,13 +47,6 @@ describe('Docket API endpoints testing (e2e)', () => {
         sendWelcomeEmail: () => Promise.resolve(true),
         create: () => Promise.resolve({code: registerCode}),
     };
-    let loginAppDto = {username: "nicodiefenbacher@web.de", password: "passwort123"}
-    let loginB2BDto = {username: "nicodiefuse@web.de", password: "passwort123"}
-    let createAppUserDto = new CreateAppUserDto( "nicodiefenbacher@web.de",  "passwort123", "Nico",
-        "Diefenbacher",
-        "015904379121")
-    let createB2BUserDto = new CreateB2BUserDto( "nicodiefuse@web.de",  "passwort123", "Nico",
-        "Diefenbacher", {ustid: "123456789", companyName: "Testfirma", category: "TestCategory", adresse: {street: "Backerstreet", city: "Karlsruhe", zipcode: "75056", housenumber: "15", country: "Deutschland"}})
 
 
     beforeAll(async () => {
@@ -73,7 +65,7 @@ describe('Docket API endpoints testing (e2e)', () => {
                 },
 
             ],
-        }).overrideProvider(MailService).useValue(mailService).compile()
+        }).overrideProvider(MailVerificationService).useValue(mailService).compile()
 
         connection = await MongoClient.connect("mongodb://localhost", {
             useNewUrlParser: true,

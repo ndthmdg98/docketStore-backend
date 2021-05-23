@@ -4,7 +4,7 @@ import {InjectModel} from '@nestjs/mongoose';
 import * as jwt from "jsonwebtoken";
 import {CreateAppUserDto, CreateB2BUserDto, User, UserDocument} from "../model/user.schema";
 import {JwtConfig} from "./auth.module";
-import {MailService} from "./mail.service";
+import {MailVerificationService} from "./mail-verification.service";
 import {UserService} from "./user.service";
 import {IToken, JwtPayloadInterface} from "../interfaces";
 
@@ -14,7 +14,7 @@ export class AuthService {
     private logger = new Logger('AuthService');
 
     constructor(
-        private readonly mailService: MailService,
+        private readonly mailService: MailVerificationService,
         private readonly userService: UserService,
         @InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>,
         @Inject("JWT_CONFIG") private readonly JWT_CONFIG: JwtConfig

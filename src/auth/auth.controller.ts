@@ -7,8 +7,9 @@ import {AuthService} from "./auth.service";
 import {AuthGuard} from "@nestjs/passport";
 import {CreateAppUserDto, CreateB2BUserDto, User} from "../model/user.schema";
 import {UserService} from "./user.service";
-import {MailService} from "./mail.service";
+import {MailVerificationService} from "./mail-verification.service";
 import {APIResponse} from "../interfaces";
+import {MailService} from "../common/mail.service";
 
 
 @ApiTags('auth')
@@ -19,19 +20,21 @@ export class AuthController {
 
     constructor( private readonly userService: UserService,
                  private readonly authService: AuthService,
+                  private readonly mailVerificationService: MailVerificationService,
                   private readonly mailService: MailService
     ) {
     }
 
     @Post('/register')
     public async registerUser(@Res() res, @Body() createUserDto: CreateAppUserDto | CreateB2BUserDto): Promise<any> {
+
         const userExists = await this.userService.existsUsername(createUserDto.username)
         if (userExists) {
             return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
         } else {
             const user = await this.authService.registerUser(createUserDto);
             if (user) {
-                const mailVerification = await this.mailService.create(user._id);
+                const mailVerification = await this.mailVerificationService.create(user._id);
                 if (mailVerification) {
                     const sentMail = await this.mailService.sendWelcomeEmail(user._id, user.username, user.firstName, mailVerification.code);
                     if (sentMail) {
@@ -45,6 +48,8 @@ export class AuthController {
             }
         }
     }
+
+    s
 
     @Post('login')
     public async login(@Res() res, @Body() login): Promise<APIResponse> {
@@ -69,7 +74,7 @@ export class AuthController {
 
     }
 
-    @Get('/:user/:code')
+    @Post('/:user/:code')
     async verifyAccount(@Req() req, @Param('user') userID: string, @Param('code') code: string, @Res() res) {
         const userDocument = await this.userService.findById(userID);
         if (await this.userService.isUserActive(userDocument._id)) {
@@ -77,7 +82,7 @@ export class AuthController {
         } else {
             const success = await this.authService.verifyAccount(userID, code);
             if (success) {
-                return res.status(HttpStatus.OK).json(APIResponse.successResponse({}));
+                return res.status(HttpStatus.OK).json(APIResponse.successResponse(null));
             } else {
                 return res.status(HttpStatus.OK).json(APIResponse.errorResponse(500));
             }

@@ -1,43 +1,36 @@
 import * as request from 'supertest';
 import {Test, TestingModule} from '@nestjs/testing';
-import {ExecutionContext, HttpModule, INestApplication, ValidationPipe} from '@nestjs/common';
+import { HttpModule, INestApplication, ValidationPipe} from '@nestjs/common';
 import {MongooseModule} from "@nestjs/mongoose";
-import {APP_DI_CONFIG, AppModule, DATABASE_URL, DATABASE_URL_TEST} from "../src/app.module";
-import {CreateAppUserDto, CreateB2BUserDto, UserSchema} from "../src/model/user.schema";
-import {MailService} from "../src/auth/mail.service";
-import {AuthModule, JWT_DI_CONFIG, MAIL_DI_CONFIG} from "../src/auth/auth.module";
+import {APP_DI_CONFIG, DATABASE_URL_TEST} from "../src/app.module";
+import {CreateAppUserDto, CreateB2BUserDto} from "../src/model/user.schema";
+import {AuthModule} from "../src/auth/auth.module";
 import {MongoClient} from "mongodb";
 import {DocketModule} from "../src/api/docket/docket.module";
 import {AppController} from "../src/app.controller";
 import {AppService} from "../src/app.service";
 import {UserService} from "../src/auth/user.service";
+import {MailService} from "../src/common/mail.service";
+import {CodeGeneratorService} from "../src/auth/code-generator.service";
+import {
+    codeGeneratorServiceMock,
+    createAppUserDto,
+    createB2BUserDto,
+    createB2BUserErrorDto, falseLoginDto1, falseLoginDto2, falseLoginDto3,
+    loginAppDto,
+    loginB2BDto, mailServiceMock, registerCodeMock
+} from "../src/utils/mocks/auth.mocks";
 
 describe('Auth API endpoints testing (e2e)', () => {
+
     let app: INestApplication;
     let connection;
     let db;
-    let registerCode = "123456789"
-    let mailService = {
-        sendWelcomeEmail: () => Promise.resolve(true),
-        create: () => Promise.resolve({code: registerCode}),
-    };
-    let falseLoginDto1 = {username: "nicodiefen@web.de", password: "passwort12"}
-    let falseLoginDto2 = {username: "nicodiefen@web.de", password: "passwort123"}
-    let falseLoginDto3 = {username: "nicodiefenbacher@web.de", password: "passwort13"}
-    let loginAppDto = {username: "nicodiefenbacher@web.de", password: "passwort123"}
-    let loginB2BDto = {username: "nicodiefuse@web.de", password: "passwort123"}
-    let createAppUserDto = new CreateAppUserDto( "nicodiefenbacher@web.de",  "passwort123", "Nico",
-            "Diefenbacher",
-             "015904379121")
-    let createB2BUserDto = new CreateB2BUserDto( "nicodiefuse@web.de",  "passwort123", "Nico",
-        "Diefenbacher",  "015904379121",  "nicodiefuse@web.de",  "TestCompany",  "Category",  "187", "Backerstreet",  "15",  "Karlsruhe", "75056", "Deutschland")
-
-    let createB2BUserErrorDto = new CreateB2BUserDto( "nicodiefuse@web.de",  "passwort123", "Nico",
-        "Diefenbacher",  "015904379121",  null,  "TestCompany",  "Category",  "187", "Backerstreet",  "15",  "Karlsruhe", "75056", "Deutschland")
-
-    let createdUserId: string = "";
+    let createdAppUserId: string = "";
+    let createdB2BUserId: string = "";
     let appToken: string = "";
     let b2bToken: string = "";
+
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [
@@ -56,7 +49,9 @@ describe('Auth API endpoints testing (e2e)', () => {
             ],
         })
             .overrideProvider(MailService)
-            .useValue(mailService).compile()
+            .useValue(mailServiceMock)
+            .overrideProvider(CodeGeneratorService)
+            .useValue(codeGeneratorServiceMock).compile()
 
         connection = await MongoClient.connect("mongodb://localhost", {
             useNewUrlParser: true,
@@ -81,7 +76,7 @@ describe('Auth API endpoints testing (e2e)', () => {
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeTruthy()
                 expect(response.httpStatusCode).toBe(200)
-                createdUserId = response.data;
+                createdAppUserId = response.data;
             })
 
     });
@@ -97,11 +92,11 @@ describe('Auth API endpoints testing (e2e)', () => {
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeTruthy()
                 expect(response.httpStatusCode).toBe(200)
-                createdUserId = response.data;
+                createdB2BUserId = response.data;
             })
 
     });
-    it(`should not register b2b user`, () => {
+    it(`should not register b2b user (no valid dto)`, () => {
 
         return request(app.getHttpServer())
             .post('/auth/register')
@@ -112,16 +107,22 @@ describe('Auth API endpoints testing (e2e)', () => {
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeFalsy()
                 expect(response.httpStatusCode).toBe(400)
-                createdUserId = response.data;
             })
 
     });
     it(`should activate app user`, async () => {
-        const userService = app.get(UserService)
-        const user = await userService.findByUsername(createAppUserDto.username)
-        expect(user).toBeDefined()
-        const success = await userService.activateUser(user._id)
-        expect(success).toBeTruthy()
+        const verifyAccountUrl = '/auth/' + createdAppUserId + "/" + registerCodeMock;
+        return request(app.getHttpServer())
+            .post(verifyAccountUrl)
+            .send()
+            .expect(200)
+            .then(res => {
+                const body = res.body;
+                expect(body.success).toBeTruthy();
+                expect(body.data).toBeNull();
+                expect(body.httpStatusCode).toBe(200);
+            })
+
     });
 
     it(`should activate b2b user`, async () => {
@@ -178,7 +179,7 @@ describe('Auth API endpoints testing (e2e)', () => {
             })
     });
 
-    it(`should not login a user, too`,  () => {
+    it(`should not login a user, too (no valid loginCredentials))`,  () => {
 
         return request(app.getHttpServer())
             .post('/auth/login')
@@ -192,7 +193,7 @@ describe('Auth API endpoints testing (e2e)', () => {
             })
     });
 
-    it(`should not login a user, too`,  () => {
+    it(`should not login a user, too (no valid loginCredentials))`,  () => {
 
         return request(app.getHttpServer())
             .post('/auth/login')
@@ -233,7 +234,21 @@ describe('Auth API endpoints testing (e2e)', () => {
                 expect(user.email).toContain(".")
                 expect(user.email.length).toBeGreaterThanOrEqual(6)
 
-                expect(user.company).toBe("[]")
+                expect(user.company).toBeUndefined()
+            })
+    });
+
+
+    it(`should not get app profile (no auth token)`,  () => {
+
+        return request(app.getHttpServer())
+            .get('/auth/profile')
+            .expect(401)
+            .then(res => {
+                const response = res.body;
+                expect(response).toBeDefined();
+                expect(response.statusCode).toBe(401);
+                expect(response.message).toBe("Unauthorized");
             })
     });
 
@@ -264,7 +279,6 @@ describe('Auth API endpoints testing (e2e)', () => {
                 expect(user.email).toContain(".")
                 expect(user.email.length).toBeGreaterThanOrEqual(6)
 
-                expect(user.company).toBeDefined()
                 expect(user.company).not.toBeNull()
                 expect(user.company.ustid).toBeDefined()
                 expect(user.company.companyName).toBeDefined()

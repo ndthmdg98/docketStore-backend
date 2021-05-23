@@ -128,7 +128,7 @@ export class CreateB2BUserDto {
 
 
     static instanceOf(object: any): object is CreateB2BUserDto {
-        return 'company' in object;
+        return "ustid" && "companyName" && "category" in object;
     }
 
 
@@ -182,7 +182,7 @@ export class CompanyInformation {
     category: string;
     @Prop()
     ustid: string;
-    @Prop([Adresse])
+    @Prop(Adresse)
     adresse: Adresse;
 
 
@@ -228,8 +228,7 @@ export class User {
     @Prop()
     phoneNumber: string;
 
-    @Prop([CompanyInformation]
-    )
+    @Prop(CompanyInformation)
     company: CompanyInformation;
 
 

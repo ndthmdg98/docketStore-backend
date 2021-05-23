@@ -13,9 +13,11 @@ import {AuthController} from "./auth.controller";
 import {MailSchema} from "../model/mail.schema";
 import {MailerModule} from "@nestjs-modules/mailer";
 import {HandlebarsAdapter} from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
-import {MailService} from "./mail.service";
+import {MailVerificationService} from "./mail-verification.service";
 import {DocketModule} from "../api/docket/docket.module";
 import {UserService} from "./user.service";
+import {MailService} from "../common/mail.service";
+import {CodeGeneratorService} from "./code-generator.service";
 
 
 export const JWT_DI_CONFIG: JwtConfig = {
@@ -78,7 +80,9 @@ export const MAIL_DI_CONFIG: MailConfig = {
         UserService,
         LocalStrategy,
         JwtStrategy,
+        MailVerificationService,
         MailService,
+        CodeGeneratorService,
         {
             provide: 'JWT_CONFIG',
             useValue: JWT_DI_CONFIG
