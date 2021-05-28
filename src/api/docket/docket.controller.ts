@@ -17,58 +17,24 @@ import {RolesGuard} from "../../common/guards/roles.guard";
 import {AuthGuard} from "@nestjs/passport";
 import {DocketService} from "./docket.service";
 import {TagService} from "./tag/tag.service";
-import {ExternalApiService} from "./external-api/external-api.service";
 import {Role, Roles} from "../../common/decorators/roles.decorator";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {CreateDocketDto, Docket, DocketDocument, DocketFile} from "../../model/docket.schema";
+import {Docket, DocketDocument} from "../../model/docket.schema";
 import {Readable} from "stream";
 import {APIResponse} from "../../interfaces";
+import {DocketFile} from "../../model/docket-file.schema";
+import {JwtAuthGuard} from "../../auth/jwt-auth.guard";
 
-export const fileFilter = (req, file, callback) => {
-    if (file.originalname.match(/\.(pdf)$/) || file.originalname.match(/\.(png)$/) || file.originalname.match(/\.(jpg)$/)) {
-        callback(null, true);
-    } else {
-        return callback(
-            new HttpException(
-                'Only pdf, png or jpg files are allowed!',
-                HttpStatus.BAD_REQUEST,
-            ),
-            false,
-        );
-    }
-};
 
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('docket')
 export class DocketController {
     private logger = new Logger('DocketController');
 
-
     constructor(private docketService: DocketService,
-                private tagService: TagService,
-                private externalAPIService: ExternalApiService) {
+                private tagService: TagService) {}
 
-    }
-
-    @Roles(Role.APP_USER)
-    @UseGuards(AuthGuard('jwt'))
-    @Post('fetch')
-    async fetch(@Req() req, @Res() res): Promise<APIResponse> {
-        this.logger.log('**Fetch Dockets from external API´s Request')
-        const userId: string = req.user._id
-        const dockets = await this.externalAPIService.fetchDocketsFromAllExternalAPIAccountsOfaUser(userId);
-        for (const docket of dockets) {
-            const isDocketAlreadyInDatabase = await this.docketService.isDocketAlreadyInDatabase(docket._id);
-            if (!isDocketAlreadyInDatabase) {
-                const createdDocket = await this.docketService.create(userId, userId, docket.docketFile);
-                if (createdDocket) {
-                    return res.status(HttpStatus.OK).json(APIResponse.successResponse(createdDocket._id));
-                } else {
-                    return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
-                }
-            }
-        }
-    }
 
 
     @Roles(Role.APP_USER)
@@ -86,7 +52,7 @@ export class DocketController {
             this.logger.error(`No File Error. User ${senderId} has sent this request`)
             return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
         }
-        const docketFile = new DocketFile(file.encoding, file.mimetype, Buffer.from(file.buffer), file.size);
+        const docketFile = new DocketFile(file.encoding, file.mimetype, file.buffer, file.size);
         const docket = await this.docketService.create(senderId, senderId, docketFile);
         if (docket) {
             return res.status(HttpStatus.OK).json(APIResponse.successResponse(docket._id));
@@ -98,24 +64,23 @@ export class DocketController {
 
     @Roles(Role.B2B_USER)
     @UseGuards(AuthGuard('jwt'))
-    @Post('create')
+    @Post('create/:receiverId')
     @UseInterceptors(
         FileInterceptor('file', {
             fileFilter: fileFilter,
         }),
     )
-    async insertDocketFromExternalCompany(@Req() req, @Res() res, @UploadedFile() file, @Body() createObjectDto: CreateDocketDto): Promise<APIResponse> {
+    async insertDocketFromExternalCompany(@Req() req, @Res() res, @UploadedFile() file, @Param('receiverId') receiverId: string): Promise<APIResponse> {
         const senderId = req.user._id;
         if (!file) {
             this.logger.error(`No File Error. User ${senderId} has sent this request`)
             return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
         }
-        const receiverId: string = createObjectDto.receiverId;
         if (!receiverId) {
             this.logger.error(`No Receiver Error. User ${senderId} has sent this request`)
             return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
         }
-        const docketFile = new DocketFile(file.encoding, file.mimetype, Buffer.from(file.buffer), file.size);
+        const docketFile = new DocketFile(file.encoding, file.mimetype, file.buffer, file.size);
         const docket = await this.docketService.create(receiverId, senderId, docketFile);
         if (docket) {
             return res.status(HttpStatus.OK).json(APIResponse.successResponse(docket._id));
@@ -196,6 +161,7 @@ export class DocketController {
         return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST))
 
     }
+
     @UseGuards(AuthGuard('jwt'))
     @Roles(Role.APP_USER)
     @Delete(':id')
@@ -209,3 +175,17 @@ export class DocketController {
 
 
 }
+
+export const fileFilter = (req, file, callback) => {
+    if (file.originalname.match(/\.(pdf)$/) || file.originalname.match(/\.(png)$/) || file.originalname.match(/\.(jpg)$/)) {
+        callback(null, true);
+    } else {
+        return callback(
+            new HttpException(
+                'Only pdf, png or jpg files are allowed!',
+                HttpStatus.BAD_REQUEST,
+            ),
+            false,
+        );
+    }
+};

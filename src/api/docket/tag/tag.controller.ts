@@ -2,29 +2,23 @@ import {Body, Controller, Delete, Get, HttpStatus, Logger, Param, Post, Put, Req
 import {AuthGuard} from "@nestjs/passport";
 import {RolesGuard} from "../../../common/guards/roles.guard";
 import {Role, Roles} from "../../../common/decorators/roles.decorator";
-import { TagService} from "./tag.service";
-import {CreateTagDto} from "../../../model/tag.schema";
+import {TagService} from "./tag.service";
 import {APIResponse} from "../../../interfaces";
-
-
-
+import {CreateTagDto, RenameTagDto} from "../../../dto/tag.dto";
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('tag')
 export class TagController {
     private readonly logger: Logger = new Logger("TagController")
+
     constructor(private tagService: TagService) {
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Roles(Role.APP_USER)
     @Post()
-    async create(@Req() req, @Res() res, @Body() tagDto: CreateTagDto): Promise<APIResponse> {
-        if (!tagDto.tagName || tagDto.tagName.length == 0){
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST))
-        }
-        const createdTagDto = new CreateTagDto( req.user._id, tagDto.tagName);
-        const createdTag = await this.tagService.create(createdTagDto);
+    async create(@Req() req, @Res() res, @Body() createdTagDto: CreateTagDto): Promise<APIResponse> {
+        const createdTag = await this.tagService.create(req.user._id, createdTagDto);
         if (createdTag) {
             return res.status(HttpStatus.OK).json(APIResponse.successResponse(createdTag._id))
         }
@@ -54,18 +48,19 @@ export class TagController {
     @UseGuards(AuthGuard('jwt'))
     @Roles(Role.APP_USER)
     @Put(':id/')
-    async rename(@Req() req, @Res() res, @Param('id') id: string, @Body() newTagName: string): Promise<any> {
-        const success = await this.tagService.rename(id, newTagName);
+    async rename(@Req() req, @Res() res, @Param('id') id: string, @Body() renameTagDto: RenameTagDto): Promise<any> {
+        const success = await this.tagService.rename(id, renameTagDto);
         if (success) {
             return res.status(HttpStatus.OK).json(APIResponse.successResponse());
         }
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR))
 
     }
+
     @UseGuards(AuthGuard('jwt'))
     @Roles(Role.APP_USER)
     @Delete(':id/')
-    async delete(@Req() req, @Res() res, @Param('id') id: string, ): Promise<any> {
+    async delete(@Req() req, @Res() res, @Param('id') id: string,): Promise<any> {
         const success = await this.tagService.deleteById(id);
         if (success) {
             return res.status(HttpStatus.OK).json(APIResponse.successResponse());
@@ -73,6 +68,4 @@ export class TagController {
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR))
 
     }
-
-
 }

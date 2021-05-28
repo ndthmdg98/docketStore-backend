@@ -1,14 +1,14 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {Document} from 'mongoose';
-import {ApiProperty} from "@nestjs/swagger";
+import {IsNotEmpty} from "class-validator";
 
 export class MailVerificationDto {
 
-    @ApiProperty()
+    @IsNotEmpty()
     readonly receiverId: string;
-    @ApiProperty()
+    @IsNotEmpty()
     readonly code: string;
-    @ApiProperty()
+    @IsNotEmpty()
     readonly dateCreated: Date;
 
 
@@ -18,10 +18,10 @@ export class MailVerificationDto {
         this.dateCreated = new Date();
     }
 }
-export type MailDocument = Mail & Document;
+export type MailDocument = MailVerification & Document;
 
 @Schema()
-export class Mail {
+export class MailVerification {
     @Prop()
     receiverId: string;
     @Prop()
@@ -30,5 +30,5 @@ export class Mail {
     dateCreated: Date;
 }
 
-export const MailSchema = SchemaFactory.createForClass(Mail);
+export const MailSchema = SchemaFactory.createForClass(MailVerification);
 

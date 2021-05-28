@@ -8,7 +8,7 @@ export interface JwtPayloadInterface {
 export class APIResponse {
     success: boolean;
     data: any;
-    httpStatusCode: number;
+    statusCode: number;
 
     static errorResponse(httpStatusCode: number): APIResponse {
             return new APIResponse(false, httpStatusCode, null)
@@ -18,10 +18,10 @@ export class APIResponse {
         return new APIResponse(true, 200, data);
     }
 
-    private constructor(success: boolean, httpStatusCode: number, data: any) {
+    private constructor(success: boolean, statusCode: number, data: any) {
         this.success = success;
         this.data = data;
-        this.httpStatusCode = httpStatusCode;
+        this.statusCode = statusCode;
     }
     stringify(){
         return JSON.stringify(this);

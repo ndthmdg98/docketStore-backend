@@ -19,9 +19,6 @@ export class MailVerificationService {
         return await this.mailModel.findOne(options).exec();
     }
 
-    async findById(ID: string): Promise<MailDocument> {
-        return await this.mailModel.findById(ID).exec();
-    }
 
     async create(userId: string): Promise<any> {
         const mailVerificationDto = new MailVerificationDto(userId, this.codeGeneratorService.generateCode(10));

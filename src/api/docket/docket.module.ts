@@ -6,7 +6,6 @@ import {TagSchema} from "../../model/tag.schema";
 import {DocketController} from "./docket.controller";
 import {TagService} from "./tag/tag.service";
 import {TagController} from "./tag/tag.controller";
-import {ExternalApiModule} from "./external-api/external-api.module";
 import {UserSchema} from "../../model/user.schema";
 
 @Module({
@@ -14,7 +13,6 @@ import {UserSchema} from "../../model/user.schema";
         MongooseModule.forFeature([{ name: 'Dockets', schema: DocketSchema }]),
         MongooseModule.forFeature([{ name: 'Tags', schema: TagSchema }]),
         MongooseModule.forFeature([{ name: 'Users', schema: UserSchema }]),
-        ExternalApiModule,
     ],
     controllers: [DocketController, TagController],
     providers: [DocketService, TagService],

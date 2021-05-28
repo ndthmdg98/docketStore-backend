@@ -6,17 +6,17 @@ import {MailerService} from "@nestjs-modules/mailer";
 @Injectable()
 export class MailService {
 
-
     private logger = new Logger('MailerService');
+
     constructor(
         @Inject('MAIL_CONFIG') private readonly MAIL_CONFIG: MailConfig,
-        @Inject('MailerService')private readonly mailerService: MailerService,
+        @Inject('MailerService') private readonly mailerService: MailerService,
     ) {
 
     }
 
 
-    async sendWelcomeEmail(receiverId: string, receiverMail: string, receiverFirstName,  code: string): Promise<boolean> {
+    async sendWelcomeEmail(receiverId: string, receiverMail: string, receiverFirstName, code: string): Promise<boolean> {
         let success = true;
         const url = `${this.MAIL_CONFIG.authenticationHostname}/${receiverId}/${code}/`
         await this.mailerService.sendMail({
@@ -41,8 +41,4 @@ export class MailService {
         return success;
 
     }
-
-
-
-
 }

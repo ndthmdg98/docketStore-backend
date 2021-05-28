@@ -1,9 +1,10 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
-import {Docket, DocketDocument, DocketFile} from "../../model/docket.schema";
+import {DocketDocument} from "../../model/docket.schema";
 import {UserDocument} from "../../model/user.schema";
 import {Readable} from "stream";
+import {DocketFile} from "../../model/docket-file.schema";
 
 @Injectable()
 export class DocketService {
@@ -37,7 +38,6 @@ export class DocketService {
         const newlyTaggedDocket = this.addTag(docketDocument, tagId);
         const updatedDocketDocument = await this.updateById(docketId, {tags: newlyTaggedDocket.tags});
         return updatedDocketDocument.tags.includes(tagId);
-
 
     }
 
@@ -76,16 +76,10 @@ export class DocketService {
             receiverId: receiverId,
             senderId: senderId,
             tags: [],
-            docketFile: docketFile
+            docketFile: docketFile,
+            docketContent: null
         });
         return createdDocket.save();
-    }
-
-
-
-    async isDocketAlreadyInDatabase(docketId: string): Promise<boolean> {
-        return null;
-        //TODO check if fetched docket is already in database
     }
 
 

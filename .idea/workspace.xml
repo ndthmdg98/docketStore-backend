@@ -5,17 +5,47 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="71ca643a-a5b3-47a2-91e6-ee37d5dabe30" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/auth/code-generator.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/mail.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/mocks/auth.mocks.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/auth/jwt-auth.guard.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dto/auth.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dto/change-password.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dto/docket.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dto/tag.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/adresse.schema.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/company-information.schema.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/model/docket-file.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jest.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/external-api/external-api.controller.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/external-api/external-api.module.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/external-api/external-api.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/external-api/services/dm-api.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/external-api/services/lidl-api.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/external-api/services/rewe-api.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/tag/tag.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/tag/tag.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/docket/tag/tag.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/tag/tag.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.spec.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/mail.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail-verification.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/jwt-strategy.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/local.strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/local.strategy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/mail-verification.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail-verification.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/interceptors/exception.interceptor.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/interceptors/timeout.interceptor.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/logger.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/mail.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/mail.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interfaces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/docket.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/docket.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/external-api-account.schema.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/mail.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/mail.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/tag.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/tag.schema.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/user.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/user.schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/mocks/auth.mocks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/mocks/auth.mocks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/mocks/request-response.mock.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/auth.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/auth.e2e-spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/docket.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/docket.e2e-spec.ts" afterDir="false" />
     </list>
@@ -72,10 +102,10 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/auth" />
+      <recent name="$PROJECT_DIR$/src/dto" />
+      <recent name="$PROJECT_DIR$/src/api/docket/external-api" />
       <recent name="$PROJECT_DIR$/test" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/test/files" />
-      <recent name="$PROJECT_DIR$/src/api/docket" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/auth" />
@@ -85,7 +115,17 @@
       <recent name="$PROJECT_DIR$/src/api/docket/tag" />
     </key>
   </component>
-  <component name="RunManager" selected="Jest.auth.e2e-spec.ts">
+  <component name="RunManager" selected="Jest.API Endpoints Testing (E2)q">
+    <configuration name="API Endpoints Testing (E2)q" type="JavaScriptTestRunnerJest">
+      <config-file value="$PROJECT_DIR$/test/jest-e2e.json" />
+      <node-interpreter value="project" />
+      <node-options value="" />
+      <jest-package value="$PROJECT_DIR$/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$" />
+      <envs />
+      <scope-kind value="ALL" />
+      <method v="2" />
+    </configuration>
     <configuration name="Auth API endpoints testing (e2e).should register b2b user" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <config-file value="$PROJECT_DIR$/test/jest-e2e.json" />
       <node-interpreter value="project" />
@@ -170,6 +210,7 @@
     </configuration>
     <list>
       <item itemvalue="Jest.Docket API endpoints testing (e2e)" />
+      <item itemvalue="Jest.API Endpoints Testing (E2)q" />
       <item itemvalue="Jest.auth.e2e-spec.ts" />
       <item itemvalue="Jest.Docket API endpoints testing (e2e).should not import a docket to the authorized (b2b) user " />
       <item itemvalue="Jest.Auth API endpoints testing (e2e).should register b2b user" />
@@ -211,7 +252,8 @@
       <workItem from="1621333415187" duration="1000" />
       <workItem from="1621359720482" duration="53700000" />
       <workItem from="1621595160901" duration="8860000" />
-      <workItem from="1621683968616" duration="14171000" />
+      <workItem from="1621683968616" duration="28302000" />
+      <workItem from="1621870412982" duration="9125000" />
     </task>
     <servers />
   </component>
@@ -233,42 +275,15 @@
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/api/docket/external-api/services/lidl-api.service.ts</url>
-          <line>36</line>
-          <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/api/docket/tag/tag.controller.ts</url>
-          <line>22</line>
-          <option name="timeStamp" value="52" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/api/docket/docket.service.ts</url>
-          <line>35</line>
+          <line>36</line>
           <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/api/docket/docket.controller.ts</url>
-          <line>140</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/test/docket.e2e-spec.ts</url>
-          <line>189</line>
+          <url>file://$PROJECT_DIR$/src/auth/auth.controller.ts</url>
+          <line>35</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="72" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/test/auth.e2e-spec.ts</url>
-          <line>119</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="90" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/test/auth.e2e-spec.ts</url>
-          <line>248</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="98" />
+          <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

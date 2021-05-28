@@ -3,13 +3,11 @@ import {Body, Injectable, Param} from '@nestjs/common';
 import {debug} from 'console';
 import {InjectModel} from "@nestjs/mongoose";
 import {
-    CreateAppUserDto,
-    CreateB2BUserDto,
-    Adresse,
-    User,
-    UserDocument,
-    CompanyInformation
+    UserDocument
 } from "../model/user.schema";
+import {CreateAppUserDto, CreateB2BUserDto} from "../dto/auth.dto";
+import {Adresse} from "../model/adresse.schema";
+import {CompanyInformation} from "../model/company-information.schema";
 
 
 @Injectable()
@@ -18,12 +16,12 @@ export class UserService {
 
     }
 
-    async existsUsername(username: string): Promise<any> {
+    async getUserByUsernameIfExists(username: string): Promise<any> {
         const user = await this.findByUsername(username);
         if (user) {
-            return true;
+            return user;
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -62,7 +60,7 @@ export class UserService {
         }
     }
 
-    async findByUsername(username: string): Promise<any> {
+    async  findByUsername(username: string): Promise<any> {
         return await this.userModel.findOne({username: username}).exec();
     }
 

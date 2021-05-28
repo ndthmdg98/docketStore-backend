@@ -1,8 +1,7 @@
 import {Inject, Injectable, Logger} from '@nestjs/common';
-import {AuthenticationResult, PassportLocalModel} from 'mongoose';
-import {InjectModel} from '@nestjs/mongoose';
+import {AuthenticationResult} from 'mongoose';
 import * as jwt from "jsonwebtoken";
-import {CreateAppUserDto, CreateB2BUserDto, User, UserDocument} from "../model/user.schema";
+import {User} from "../model/user.schema";
 import {JwtConfig} from "./auth.module";
 import {MailVerificationService} from "./mail-verification.service";
 import {UserService} from "./user.service";
@@ -16,32 +15,11 @@ export class AuthService {
     constructor(
         private readonly mailService: MailVerificationService,
         private readonly userService: UserService,
-        @InjectModel('Users') private readonly userModel: PassportLocalModel<UserDocument>,
         @Inject("JWT_CONFIG") private readonly JWT_CONFIG: JwtConfig
     ) {
     }
 
-    async registerUser(userToRegister: CreateAppUserDto | CreateB2BUserDto): Promise<any> {
-        const user = await this.userService.createUser(userToRegister);
-        if (user && user._id) {
-            this.logger.log("User successfully created!");
-            return user;
-        } else {
-            this.logger.log(user.errors);
 
-            return null;
-        }
-    }
-
-
-    private async checkPassword(user: UserDocument, password: string): Promise<boolean> {
-        const authenticationResult: AuthenticationResult = await user.authenticate(password);
-        if (authenticationResult.error) {
-            return false;
-        } else if (authenticationResult.user) {
-            return true;
-        }
-    }
 
 
     async verifyAccount(userId: string, code: string): Promise<boolean> {
@@ -84,8 +62,14 @@ export class AuthService {
         return await this.userService.findById(payload.id);
     }
 
-    async validateUserWithPassword(user: UserDocument, pass: string): Promise<boolean> {
-        return await this.checkPassword(user, pass);
+    async validateUsernameWithPassword(username: string, pasword: string): Promise<boolean> {
+        const user = await this.userService.findByUsername(username);
+        const authenticationResult: AuthenticationResult = await user.authenticate(pasword);
+        if (authenticationResult.error) {
+            return false;
+        } else if (authenticationResult.user) {
+            return true;
+        }
     }
 }
 

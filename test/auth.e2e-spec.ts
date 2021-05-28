@@ -3,15 +3,12 @@ import {Test, TestingModule} from '@nestjs/testing';
 import { HttpModule, INestApplication, ValidationPipe} from '@nestjs/common';
 import {MongooseModule} from "@nestjs/mongoose";
 import {APP_DI_CONFIG, DATABASE_URL_TEST} from "../src/app.module";
-import {CreateAppUserDto, CreateB2BUserDto} from "../src/model/user.schema";
 import {AuthModule} from "../src/auth/auth.module";
 import {MongoClient} from "mongodb";
 import {DocketModule} from "../src/api/docket/docket.module";
 import {AppController} from "../src/app.controller";
 import {AppService} from "../src/app.service";
-import {UserService} from "../src/auth/user.service";
 import {MailService} from "../src/common/mail.service";
-import {CodeGeneratorService} from "../src/auth/code-generator.service";
 import {
     codeGeneratorServiceMock,
     createAppUserDto,
@@ -20,6 +17,7 @@ import {
     loginAppDto,
     loginB2BDto, mailServiceMock, registerCodeMock
 } from "../src/utils/mocks/auth.mocks";
+import {CodeGeneratorService} from "../src/auth/code-generator.service";
 
 describe('Auth API endpoints testing (e2e)', () => {
 
@@ -28,8 +26,8 @@ describe('Auth API endpoints testing (e2e)', () => {
     let db;
     let createdAppUserId: string = "";
     let createdB2BUserId: string = "";
-    let appToken: string = "";
-    let b2bToken: string = "";
+    let appJwtToken: string = "";
+    let b2bJwtToken: string = "";
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -61,21 +59,23 @@ describe('Auth API endpoints testing (e2e)', () => {
         app = moduleFixture.createNestApplication();
         app.enableShutdownHooks();
 
-        app.useGlobalPipes(new ValidationPipe());
+        app.useGlobalPipes(new ValidationPipe({
+            whitelist: true,
+        }));
         await app.init();
     });
 
     it(`should register app user`, () => {
 
         return request(app.getHttpServer())
-            .post('/auth/register')
+            .post('/auth/app/register')
             .send(createAppUserDto)
             .expect(200)
             .then(res => {
                 const response = res.body;
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeTruthy()
-                expect(response.httpStatusCode).toBe(200)
+                expect(response.statusCode).toBe(200)
                 createdAppUserId = response.data;
             })
 
@@ -84,14 +84,14 @@ describe('Auth API endpoints testing (e2e)', () => {
     it(`should register b2b user`, () => {
 
         return request(app.getHttpServer())
-            .post('/auth/register')
+            .post('/auth/b2b/register')
             .send(createB2BUserDto)
             .expect(200)
             .then(res => {
                 const response = res.body;
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeTruthy()
-                expect(response.httpStatusCode).toBe(200)
+                expect(response.statusCode).toBe(200)
                 createdB2BUserId = response.data;
             })
 
@@ -99,18 +99,17 @@ describe('Auth API endpoints testing (e2e)', () => {
     it(`should not register b2b user (no valid dto)`, () => {
 
         return request(app.getHttpServer())
-            .post('/auth/register')
+            .post('/auth/b2b/register')
             .send(createB2BUserErrorDto)
-            .expect(200)
+            .expect(400)
             .then(res => {
                 const response = res.body;
-                expect(response.data).toBeDefined()
-                expect(response.success).toBeFalsy()
-                expect(response.httpStatusCode).toBe(400)
+                expect(response.message.length).toBeGreaterThanOrEqual(1)
+                expect(response.error).toBe("Bad Request")
             })
 
     });
-    it(`should activate app user`, async () => {
+    it(`should activate app user`, () => {
         const verifyAccountUrl = '/auth/' + createdAppUserId + "/" + registerCodeMock;
         return request(app.getHttpServer())
             .post(verifyAccountUrl)
@@ -120,17 +119,23 @@ describe('Auth API endpoints testing (e2e)', () => {
                 const body = res.body;
                 expect(body.success).toBeTruthy();
                 expect(body.data).toBeNull();
-                expect(body.httpStatusCode).toBe(200);
+                expect(body.statusCode).toBe(200);
             })
 
     });
+    it(`should activate b2b user`, () => {
+        const verifyAccountUrl = '/auth/' + createdB2BUserId + "/" + registerCodeMock;
+        return request(app.getHttpServer())
+            .post(verifyAccountUrl)
+            .send()
+            .expect(200)
+            .then(res => {
+                const body = res.body;
+                expect(body.success).toBeTruthy();
+                expect(body.data).toBeNull();
+                expect(body.statusCode).toBe(200);
+            })
 
-    it(`should activate b2b user`, async () => {
-        const userService = app.get(UserService)
-        const user = await userService.findByUsername(createB2BUserDto.username)
-        expect(user).toBeDefined()
-        const success = await userService.activateUser(user._id)
-        expect(success).toBeTruthy()
     });
 
 
@@ -143,9 +148,9 @@ describe('Auth API endpoints testing (e2e)', () => {
             .then(res => {
                 const body = res.body;
                 expect(body.success).toBeTruthy();
-                expect(body.httpStatusCode).toBe(200);
+                expect(body.statusCode).toBe(200);
                 expect(body.data.accessToken.length).toBeGreaterThan(50);
-                appToken = body.data.accessToken;
+                appJwtToken = body.data.accessToken;
             })
     });
 
@@ -158,9 +163,9 @@ describe('Auth API endpoints testing (e2e)', () => {
             .then(res => {
                 const body = res.body;
                 expect(body.success).toBeTruthy();
-                expect(body.httpStatusCode).toBe(200);
+                expect(body.statusCode).toBe(200);
                 expect(body.data.accessToken.length).toBeGreaterThan(50);
-                b2bToken = body.data.accessToken;
+                b2bJwtToken = body.data.accessToken;
             })
     });
 
@@ -175,11 +180,11 @@ describe('Auth API endpoints testing (e2e)', () => {
                 const response = res.body;
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeFalsy()
-                expect(response.httpStatusCode).toBe(401)
+                expect(response.statusCode).toBe(401)
             })
     });
 
-    it(`should not login a user, too (no valid loginCredentials))`,  () => {
+    it(`should not login a user, too (no valid loginCredentials)`,  () => {
 
         return request(app.getHttpServer())
             .post('/auth/login')
@@ -189,11 +194,11 @@ describe('Auth API endpoints testing (e2e)', () => {
                 const response = res.body;
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeFalsy()
-                expect(response.httpStatusCode).toBe(401)
+                expect(response.statusCode).toBe(401)
             })
     });
 
-    it(`should not login a user, too (no valid loginCredentials))`,  () => {
+    it(`should not login a user, too (no valid loginCredentials)`,  () => {
 
         return request(app.getHttpServer())
             .post('/auth/login')
@@ -203,7 +208,7 @@ describe('Auth API endpoints testing (e2e)', () => {
                 const response = res.body;
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeFalsy()
-                expect(response.httpStatusCode).toBe(401)
+                expect(response.statusCode).toBe(401)
             })
     });
 
@@ -211,14 +216,14 @@ describe('Auth API endpoints testing (e2e)', () => {
 
         return request(app.getHttpServer())
             .get('/auth/profile')
-            .set('Authorization', 'bearer ' + appToken)
+            .set('Authorization', 'bearer ' + appJwtToken)
             .expect(200)
             .then(res => {
                 const response = res.body;
 
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeTruthy()
-                expect(response.httpStatusCode).toBe(200)
+                expect(response.statusCode).toBe(200)
 
                 const user = response.data;
                 expect(user._id).toBeDefined()
@@ -256,14 +261,14 @@ describe('Auth API endpoints testing (e2e)', () => {
 
         return request(app.getHttpServer())
             .get('/auth/profile')
-            .set('Authorization', 'bearer ' + b2bToken)
+            .set('Authorization', 'bearer ' + b2bJwtToken)
             .expect(200)
             .then(res => {
                 const response = res.body;
 
                 expect(response.data).toBeDefined()
                 expect(response.success).toBeTruthy()
-                expect(response.httpStatusCode).toBe(200)
+                expect(response.statusCode).toBe(200)
 
                 const user = response.data;
                 expect(user._id).toBeDefined()

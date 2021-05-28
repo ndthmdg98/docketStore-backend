@@ -1,8 +1,7 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
-import {CreateTagDto, TagDocument} from "../../../model/tag.schema";
-import {APIResponse} from "../../../interfaces";
+import {CreateTagDto, RenameTagDto, TagDocument} from "../../../model/tag.schema";
 
 
 
@@ -15,10 +14,11 @@ export class TagService  {
 
     }
 
-    async create(createObjectDto: CreateTagDto): Promise<TagDocument> {
+    async create(userId: string, createObjectDto: CreateTagDto): Promise<TagDocument> {
         const createdTagDocument = new this.tagModel({
-            userId: createObjectDto.userId,
-            tagName: createObjectDto.tagName
+            userId: userId,
+            tagName: createObjectDto.tagName,
+            createdAt: new Date()
         });
         return createdTagDocument.save();
     }
@@ -37,9 +37,9 @@ export class TagService  {
         
     }
 
-    async rename(tagId: string, newTagName: string): Promise<boolean> {
-        const renamedTagDocument = await this.tagModel.findByIdAndUpdate(tagId, {tagName: newTagName});
+    async rename(tagId: string, renameTagDto: RenameTagDto): Promise<boolean> {
+        const renamedTagDocument = await this.tagModel.findByIdAndUpdate(tagId, {tagName: renameTagDto.newTagName});
         const renamedTag = renamedTagDocument.toObject();
-        return renamedTag.tagName == newTagName;
+        return renamedTag.tagName == renameTagDto.newTagName;
     }
 }
