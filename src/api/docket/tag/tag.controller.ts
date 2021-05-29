@@ -1,12 +1,12 @@
 import {Body, Controller, Delete, Get, HttpStatus, Logger, Param, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
-import {AuthGuard} from "@nestjs/passport";
 import {RolesGuard} from "../../../common/guards/roles.guard";
 import {Role, Roles} from "../../../common/decorators/roles.decorator";
 import {TagService} from "./tag.service";
 import {APIResponse} from "../../../interfaces";
 import {CreateTagDto, RenameTagDto} from "../../../dto/tag.dto";
+import {JwtAuthGuard} from "../../../auth/jwt-auth.guard";
 
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('tag')
 export class TagController {
     private readonly logger: Logger = new Logger("TagController")
@@ -14,7 +14,7 @@ export class TagController {
     constructor(private tagService: TagService) {
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Post()
     async create(@Req() req, @Res() res, @Body() createdTagDto: CreateTagDto): Promise<APIResponse> {
@@ -26,7 +26,7 @@ export class TagController {
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR))
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Get()
     async findAllByUserId(@Req() req, @Res() res): Promise<APIResponse> {
@@ -34,7 +34,7 @@ export class TagController {
         return res.status(HttpStatus.OK).json(APIResponse.successResponse(tags));
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Get(':id')
     async findById(@Req() req, @Res() res, @Param('id') id: string): Promise<any> {
@@ -45,7 +45,7 @@ export class TagController {
         return res.status(HttpStatus.NOT_FOUND).json(APIResponse.errorResponse(HttpStatus.NOT_FOUND));
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Put(':id/')
     async rename(@Req() req, @Res() res, @Param('id') id: string, @Body() renameTagDto: RenameTagDto): Promise<any> {
@@ -57,7 +57,7 @@ export class TagController {
 
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Delete(':id/')
     async delete(@Req() req, @Res() res, @Param('id') id: string,): Promise<any> {

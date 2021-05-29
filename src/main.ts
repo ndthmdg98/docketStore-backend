@@ -22,9 +22,7 @@ async function bootstrap() {
         // Pass to next layer of middleware
         next();
     });
-    app.useGlobalPipes(new ValidationPipe({
-        whitelist: true,
-    }));
+    app.useGlobalPipes(new ValidationPipe());
     await app.listen(3000);
 }
 

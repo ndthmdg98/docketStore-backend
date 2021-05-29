@@ -48,6 +48,11 @@ export class LoginUserDto {
     })
     password: string;
 
+
+    constructor(username: string, password: string) {
+        this.username = username;
+        this.password = password;
+    }
 }
 
 export class CreateB2BUserDto {

@@ -10,8 +10,8 @@ export class APIResponse {
     data: any;
     statusCode: number;
 
-    static errorResponse(httpStatusCode: number): APIResponse {
-            return new APIResponse(false, httpStatusCode, null)
+    static errorResponse(httpStatusCode: number, message?: string): APIResponse {
+            return new APIResponse(false, httpStatusCode, message)
     }
 
     static successResponse(data?: any): APIResponse {

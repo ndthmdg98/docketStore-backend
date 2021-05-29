@@ -1,73 +1,32 @@
 import * as request from 'supertest';
-import {Test, TestingModule} from '@nestjs/testing';
-import { HttpModule, INestApplication, ValidationPipe} from '@nestjs/common';
-import {MongooseModule} from "@nestjs/mongoose";
-import {APP_DI_CONFIG, DATABASE_URL_TEST} from "../src/app.module";
-import {AuthModule} from "../src/auth/auth.module";
-import {MongoClient} from "mongodb";
-import {DocketModule} from "../src/api/docket/docket.module";
-import {AppController} from "../src/app.controller";
-import {AppService} from "../src/app.service";
-import {MailService} from "../src/common/mail.service";
-import {
-    codeGeneratorServiceMock,
+import {INestApplication} from '@nestjs/common';
+import registerCodeMock, {
     createAppUserDto,
     createB2BUserDto,
     createB2BUserErrorDto, falseLoginDto1, falseLoginDto2, falseLoginDto3,
     loginAppDto,
-    loginB2BDto, mailServiceMock, registerCodeMock
+    loginB2BDto
 } from "../src/utils/mocks/auth.mocks";
-import {CodeGeneratorService} from "../src/auth/code-generator.service";
+import {TestHelper} from "../src/utils/TestHelper";
 
 describe('Auth API endpoints testing (e2e)', () => {
 
-    let app: INestApplication;
-    let connection;
-    let db;
     let createdAppUserId: string = "";
     let createdB2BUserId: string = "";
     let appJwtToken: string = "";
     let b2bJwtToken: string = "";
 
+    let testHelper: TestHelper;
     beforeAll(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [
-                MongooseModule.forRoot(DATABASE_URL_TEST),
-                DocketModule,
-                AuthModule,
-                HttpModule
-            ],
-            controllers: [AppController],
-            providers: [AppService,
-                {
-                    provide: 'APP_CONFIG',
-                    useValue: APP_DI_CONFIG
-                },
-
-            ],
-        })
-            .overrideProvider(MailService)
-            .useValue(mailServiceMock)
-            .overrideProvider(CodeGeneratorService)
-            .useValue(codeGeneratorServiceMock).compile()
-
-        connection = await MongoClient.connect("mongodb://localhost", {
-            useNewUrlParser: true,
-        });
-        db = await connection.db("docketstore_test");
-        await db.dropDatabase()
-        app = moduleFixture.createNestApplication();
-        app.enableShutdownHooks();
-
-        app.useGlobalPipes(new ValidationPipe({
-            whitelist: true,
-        }));
-        await app.init();
+        testHelper = new TestHelper();
+        await testHelper.createTestingModule();
+        await testHelper.dropTestDatabase();
     });
+
 
     it(`should register app user`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .post('/auth/app/register')
             .send(createAppUserDto)
             .expect(200)
@@ -83,7 +42,7 @@ describe('Auth API endpoints testing (e2e)', () => {
 
     it(`should register b2b user`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .post('/auth/b2b/register')
             .send(createB2BUserDto)
             .expect(200)
@@ -98,7 +57,7 @@ describe('Auth API endpoints testing (e2e)', () => {
     });
     it(`should not register b2b user (no valid dto)`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .post('/auth/b2b/register')
             .send(createB2BUserErrorDto)
             .expect(400)
@@ -111,8 +70,8 @@ describe('Auth API endpoints testing (e2e)', () => {
     });
     it(`should activate app user`, () => {
         const verifyAccountUrl = '/auth/' + createdAppUserId + "/" + registerCodeMock;
-        return request(app.getHttpServer())
-            .post(verifyAccountUrl)
+        return request(testHelper.app.getHttpServer())
+            .get(verifyAccountUrl)
             .send()
             .expect(200)
             .then(res => {
@@ -125,8 +84,8 @@ describe('Auth API endpoints testing (e2e)', () => {
     });
     it(`should activate b2b user`, () => {
         const verifyAccountUrl = '/auth/' + createdB2BUserId + "/" + registerCodeMock;
-        return request(app.getHttpServer())
-            .post(verifyAccountUrl)
+        return request(testHelper.app.getHttpServer())
+            .get(verifyAccountUrl)
             .send()
             .expect(200)
             .then(res => {
@@ -139,9 +98,9 @@ describe('Auth API endpoints testing (e2e)', () => {
     });
 
 
-    it(`should login app user`,  () => {
+    it(`should login app user`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .post('/auth/login')
             .send(loginAppDto)
             .expect(200)
@@ -154,9 +113,9 @@ describe('Auth API endpoints testing (e2e)', () => {
             })
     });
 
-    it(`should login b2b user`,  () => {
+    it(`should login b2b user`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .post('/auth/login')
             .send(loginB2BDto)
             .expect(200)
@@ -170,51 +129,51 @@ describe('Auth API endpoints testing (e2e)', () => {
     });
 
 
-    it(`should not login a user`,  () => {
+    it(`should not login a user`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .post('/auth/login')
             .send(falseLoginDto1)
             .expect(401)
             .then(res => {
                 const response = res.body;
-                expect(response.data).toBeDefined()
+                expect(response.data).toBeUndefined()
                 expect(response.success).toBeFalsy()
                 expect(response.statusCode).toBe(401)
             })
     });
 
-    it(`should not login a user, too (no valid loginCredentials)`,  () => {
+    it(`should not login a user, too (no valid loginCredentials)`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .post('/auth/login')
             .send(falseLoginDto2)
             .expect(401)
             .then(res => {
                 const response = res.body;
-                expect(response.data).toBeDefined()
+                expect(response.data).toBeUndefined()
                 expect(response.success).toBeFalsy()
                 expect(response.statusCode).toBe(401)
             })
     });
 
-    it(`should not login a user, too (no valid loginCredentials)`,  () => {
+    it(`should not login a user, too (no valid loginCredentials)`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .post('/auth/login')
             .send(falseLoginDto3)
             .expect(401)
             .then(res => {
                 const response = res.body;
-                expect(response.data).toBeDefined()
+                expect(response.data).toBeUndefined()
                 expect(response.success).toBeFalsy()
                 expect(response.statusCode).toBe(401)
             })
     });
 
-    it(`should get app profile`,  () => {
+    it(`should get app profile`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .get('/auth/profile')
             .set('Authorization', 'bearer ' + appJwtToken)
             .expect(200)
@@ -244,9 +203,9 @@ describe('Auth API endpoints testing (e2e)', () => {
     });
 
 
-    it(`should not get app profile (no auth token)`,  () => {
+    it(`should not get app profile (no auth token)`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .get('/auth/profile')
             .expect(401)
             .then(res => {
@@ -257,9 +216,9 @@ describe('Auth API endpoints testing (e2e)', () => {
             })
     });
 
-    it(`should get b2b profile`,  () => {
+    it(`should get b2b profile`, () => {
 
-        return request(app.getHttpServer())
+        return request(testHelper.app.getHttpServer())
             .get('/auth/profile')
             .set('Authorization', 'bearer ' + b2bJwtToken)
             .expect(200)
@@ -297,8 +256,8 @@ describe('Auth API endpoints testing (e2e)', () => {
     });
 
 
-
     afterAll(async () => {
-        await app.close();
+        await testHelper.app.close();
     });
 });
+

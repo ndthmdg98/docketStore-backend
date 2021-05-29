@@ -31,7 +31,7 @@ export class AuthController {
     public async registerAppUser(@Res() res, @Body() createUserDto: CreateAppUserDto): Promise<any> {
         const userExists = await this.userService.getUserByUsernameIfExists(createUserDto.username)
         if (userExists) {
-            return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
+            return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST, "User with Given Mail already exists"));
         } else {
             const user = await this.userService.createUser(createUserDto);
             if (user) {
@@ -54,7 +54,7 @@ export class AuthController {
     public async registerB2bUser(@Res() res, @Body() createUserDto: CreateB2BUserDto): Promise<any> {
         const userExists = await this.userService.getUserByUsernameIfExists(createUserDto.username)
         if (userExists) {
-            return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
+            return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST, "User with Given Mail already exists"));
         } else {
             const user = await this.userService.createUser(createUserDto);
             if (user) {
@@ -74,7 +74,7 @@ export class AuthController {
     }
 
 
-    @Post('login')
+    @Post('/login')
     public async login(@Res() res, @Body() loginDto: LoginUserDto): Promise<APIResponse> {
         this.logger.log("**Login Request**")
         const userDocument = await this.userService.getUserByUsernameIfExists(loginDto.username)
@@ -96,8 +96,8 @@ export class AuthController {
 
     }
 
-    @Post('/:user/:code')
-    async verifyAccount(@Req() req, @Param('user') userID: string, @Param('code') code: string, @Res() res) {
+    @Get('/:user/:code')
+    async verifyAccount(@Req() req, @Res() res, @Param('user') userID: string, @Param('code') code: string) {
         const userDocument = await this.userService.findById(userID);
         if (await this.userService.isUserActive(userDocument._id)) {
             return res.status(HttpStatus.OK).json(APIResponse.successResponse({message: "Given Mail already confirmed!"}));

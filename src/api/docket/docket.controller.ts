@@ -14,15 +14,13 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import {RolesGuard} from "../../common/guards/roles.guard";
-import {AuthGuard} from "@nestjs/passport";
 import {DocketService} from "./docket.service";
 import {TagService} from "./tag/tag.service";
 import {Role, Roles} from "../../common/decorators/roles.decorator";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {Docket, DocketDocument} from "../../model/docket.schema";
+import {Docket, DocketDocument, DocketFile} from "../../model/docket.schema";
 import {Readable} from "stream";
 import {APIResponse} from "../../interfaces";
-import {DocketFile} from "../../model/docket-file.schema";
 import {JwtAuthGuard} from "../../auth/jwt-auth.guard";
 
 
@@ -38,7 +36,7 @@ export class DocketController {
 
 
     @Roles(Role.APP_USER)
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Post('import')
     @UseInterceptors(
         FileInterceptor('file', {
@@ -63,7 +61,7 @@ export class DocketController {
     }
 
     @Roles(Role.B2B_USER)
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Post('create/:receiverId')
     @UseInterceptors(
         FileInterceptor('file', {
@@ -88,7 +86,7 @@ export class DocketController {
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Get()
     async findAllByUser(@Req() req, @Res() res): Promise<any> {
@@ -99,7 +97,7 @@ export class DocketController {
         return res.status(HttpStatus.OK).json(APIResponse.successResponse(dockets));
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Get(':id')
     async findById(@Req() req, @Res() res, @Param('id') id: string): Promise<any> {
@@ -122,7 +120,7 @@ export class DocketController {
 
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Get('tag/:tagId')
     async findByTags(@Req() req, @Res() res, @Param('tagId') tagId: string): Promise<any> {
@@ -131,13 +129,17 @@ export class DocketController {
     }
 
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Put(':docketId/mark/:tagId')
     async markDocketWithTag(@Req() req, @Res() res, @Param('docketId') docketId: string, @Param('tagId') tagId: string): Promise<DocketDocument | null> {
         const tag = await this.tagService.findById(tagId);
         if (tag.userId == req.user._id) {
-            const success = await this.docketService.markDocketWithTag(docketId, tagId);
+            const docketDocument = await this.docketService.findById(docketId);
+            if (!docketDocument) {
+                return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.successResponse(HttpStatus.NOT_FOUND));
+            }
+            const success = await this.docketService.markDocketWithTag(docketDocument, tagId);
             if (success) {
                 return res.status(HttpStatus.OK).json(APIResponse.successResponse(HttpStatus.OK));
             }
@@ -146,13 +148,17 @@ export class DocketController {
         return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST))
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Put(':docketId/unmark/:tagId')
     async unmarkDocketWithTag(@Req() req, @Res() res, @Param('docketId') docketId: string, @Param('tagId') tagId: string): Promise<DocketDocument | null> {
         const tag = await this.tagService.findById(tagId);
         if (tag.userId == req.user._id) {
-            const success = await this.docketService.unmarkDocketWithTag(docketId, tagId);
+            const docketDocument = await this.docketService.findById(docketId);
+            if (!docketDocument) {
+                return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.successResponse(HttpStatus.NOT_FOUND));
+            }
+            const success = await this.docketService.unmarkDocketWithTag(docketDocument, tagId);
             if (success) {
                 return res.status(HttpStatus.OK).json(APIResponse.successResponse(HttpStatus.OK));
             }
@@ -162,7 +168,7 @@ export class DocketController {
 
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Roles(Role.APP_USER)
     @Delete(':id')
     async deleteById(@Req() req, @Res() res, @Param('id') id: string): Promise<Docket | null> {

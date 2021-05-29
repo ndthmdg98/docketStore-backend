@@ -1,11 +1,32 @@
 import {Prop, raw, Schema, SchemaFactory} from "@nestjs/mongoose";
 import {Document} from 'mongoose';
-import {DocketFile} from "./docket-file.schema";
+
+@Schema()
+export class DocketFile {
+    @Prop()
+    encoding: string;
+    @Prop()
+    mimetype: string;
+    @Prop({type: [Number]})
+    buffer: number[];
+    @Prop()
+    size: number;
+
+
+    constructor(encoding: string, mimetype: string, buffer: Buffer, size: number) {
+        this.encoding = encoding;
+        this.mimetype = mimetype;
+        this.buffer = buffer.toJSON().data;
+        this.size = size;
+    }
+
+}
+export const DocketFileSchema = SchemaFactory.createForClass(DocketFile)
 
 @Schema()
 export class Docket {
 
-    @Prop()
+    @Prop({type: [String]})
     tags: string[];
     @Prop({type: Date})
     createdAt: Date;
@@ -14,7 +35,7 @@ export class Docket {
     @Prop()
     senderId: string;
 
-    @Prop(DocketFile)
+    @Prop({type: DocketFileSchema})
     docketFile: DocketFile;
 
     _id: string;

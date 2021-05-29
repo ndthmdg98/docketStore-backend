@@ -1,10 +1,9 @@
 import {HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
-import {DocketDocument} from "../../model/docket.schema";
+import {DocketDocument, DocketFile} from "../../model/docket.schema";
 import {UserDocument} from "../../model/user.schema";
 import {Readable} from "stream";
-import {DocketFile} from "../../model/docket-file.schema";
 
 @Injectable()
 export class DocketService {
@@ -33,18 +32,18 @@ export class DocketService {
         return await this.docketModel.find({tags: tagId}).exec();
     }
 
-    async markDocketWithTag(docketId: string, tagId: string): Promise<boolean> {
-        const docketDocument = await this.findById(docketId);
+    async markDocketWithTag(docketDocument: DocketDocument, tagId: string): Promise<boolean> {
         const newlyTaggedDocket = this.addTag(docketDocument, tagId);
-        const updatedDocketDocument = await this.updateById(docketId, {tags: newlyTaggedDocket.tags});
+        await newlyTaggedDocket.save()
+        const updatedDocketDocument = await this.findById(docketDocument._id);
         return updatedDocketDocument.tags.includes(tagId);
 
     }
 
-    async unmarkDocketWithTag(docketId: string, tagId: string): Promise<boolean> {
-        const docketDocument = await this.findById(docketId);
+    async unmarkDocketWithTag(docketDocument: DocketDocument, tagId: string): Promise<boolean> {
         const docketWithRemovedTag = this.removeTag(docketDocument, tagId);
-        const updatedDocketDocument = await this.updateById(docketId, {tags: docketWithRemovedTag.tags});
+        await docketWithRemovedTag.save()
+        const updatedDocketDocument = await this.findById(docketDocument._id);
         return !updatedDocketDocument.tags.includes(tagId);
 
     }
@@ -88,12 +87,12 @@ export class DocketService {
     }
 
     toReadable(docketFile: DocketFile): Readable {
-            const buffer = new Buffer(docketFile.buffer);
-            const readable = new Readable()
-            readable._read = () => {
-            } // _read is required but you can noop it
-            readable.push(buffer)
-            readable.push(null)
-            return readable;
+        const buffer = Buffer.from(docketFile.buffer);
+        const readable = new Readable()
+        readable._read = () => {
+        } // _read is required but you can noop it
+        readable.push(buffer)
+        readable.push(null)
+        return readable;
     }
 }
