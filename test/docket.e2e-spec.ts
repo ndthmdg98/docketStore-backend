@@ -1,13 +1,14 @@
 import * as request from 'supertest';
 import * as fs from "fs";
 import {TestHelper} from "../src/utils/TestHelper";
+import * as path from "path";
 
 describe('Docket API endpoints testing (e2e)', () => {
     let testHelper: TestHelper;
     let docketId = "";
     let tagId = ""
     //TODO path passt evtl nicht
-    const file = fs.readFileSync("./files/Dein REWE eBon vom 15.04.2021.pdf")
+    const file = fs.readFileSync(path.resolve(__dirname, "files/Dein REWE eBon vom 15.04.2021.pdf"));
     beforeAll(async () => {
         testHelper = new TestHelper("docketstore_test_docket");
         await testHelper.createTestingModule();
