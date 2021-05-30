@@ -6,7 +6,8 @@ describe('Docket API endpoints testing (e2e)', () => {
     let testHelper: TestHelper;
     let docketId = "";
     let tagId = ""
-    const file = fs.readFileSync("files/Dein REWE eBon vom 15.04.2021.pdf")
+    //TODO path passt evtl nicht
+    const file = fs.readFileSync("./files/Dein REWE eBon vom 15.04.2021.pdf")
     beforeAll(async () => {
         testHelper = new TestHelper("docketstore_test_docket");
         await testHelper.createTestingModule();
