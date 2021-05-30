@@ -73,7 +73,6 @@
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.23.2",
     "jest": "^24.9.0",
-    "mongodb-memory-server": "^6.9.6",
     "prettier": "^1.18.2",
     "supertest": "^4.0.2",
     "ts-jest": "^26.5.6",

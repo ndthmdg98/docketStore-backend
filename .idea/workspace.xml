@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="71ca643a-a5b3-47a2-91e6-ee37d5dabe30" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/TestHelper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/TestHelper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/auth.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/auth.e2e-spec.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -274,7 +278,7 @@
       <workItem from="1622214337318" duration="5000" />
       <workItem from="1622214354927" duration="6033000" />
       <workItem from="1622234118536" duration="1354000" />
-      <workItem from="1622235486568" duration="21508000" />
+      <workItem from="1622235486568" duration="21992000" />
     </task>
     <servers />
   </component>

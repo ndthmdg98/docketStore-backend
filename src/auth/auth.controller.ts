@@ -104,7 +104,7 @@ export class AuthController {
     async verifyAccount(@Req() req, @Res() res, @Param('user') userID: string, @Param('code') code: string) {
         const userDocument = await this.userService.findById(userID);
         if (await this.userService.isUserActive(userDocument._id)) {
-            return res.status(HttpStatus.OK).json(APIResponse.successResponse({message: "Given Mail already confirmed!"}));
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse("Given Mail already confirmed!"));
         } else {
             const success = await this.mailVerificationService.verifyMailVerification(userID, code);
             if (success) {
