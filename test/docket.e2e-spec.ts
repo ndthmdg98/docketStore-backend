@@ -167,7 +167,6 @@ describe('Docket API endpoints testing (e2e)', () => {
 
     it(`should create a docket from the authorized (b2b) user to a given (app) user `, async () => {
 
-        const file = fs.readFileSync("/Users/nicodiefenbacher/WebstormProjects/docketStore/docketStore-backend/test/files/Dein REWE eBon vom 15.04.2021.pdf")
         const createDocketUrl = '/docket/create/' + testHelper.appUserId;
         const res = await request(testHelper.app.getHttpServer())
             .post(createDocketUrl)
@@ -183,7 +182,6 @@ describe('Docket API endpoints testing (e2e)', () => {
 
     it(`should not import a docket to the authorized (b2b) user `, async () => {
 
-        const file = fs.readFileSync("/Users/nicodiefenbacher/WebstormProjects/docketStore/docketStore-backend/test/files/Dein REWE eBon vom 15.04.2021.pdf")
 
         const res = await request(testHelper.app.getHttpServer())
             .post('/docket/import')
