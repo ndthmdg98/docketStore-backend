@@ -24,15 +24,14 @@ import {APIResponse} from "../../interfaces";
 import {JwtAuthGuard} from "../../auth/jwt-auth.guard";
 
 
-
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('docket')
 export class DocketController {
     private logger = new Logger('DocketController');
 
     constructor(private docketService: DocketService,
-                private tagService: TagService) {}
-
+                private tagService: TagService) {
+    }
 
 
     @Roles(Role.APP_USER)
@@ -74,16 +73,14 @@ export class DocketController {
             this.logger.error(`No File Error. User ${senderId} has sent this request`)
             return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
         }
-        if (!receiverId) {
-            this.logger.error(`No Receiver Error. User ${senderId} has sent this request`)
-            return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
-        }
         const docketFile = new DocketFile(file.encoding, file.mimetype, file.buffer, file.size);
         const docket = await this.docketService.create(receiverId, senderId, docketFile);
         if (docket) {
             return res.status(HttpStatus.OK).json(APIResponse.successResponse(docket._id));
+        } else {
+            this.logger.error(`Receiver not found Error. User ${senderId} has sent this request`)
+            return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST));
         }
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @UseGuards(JwtAuthGuard)
@@ -139,11 +136,8 @@ export class DocketController {
             if (!docketDocument) {
                 return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.successResponse(HttpStatus.NOT_FOUND));
             }
-            const success = await this.docketService.markDocketWithTag(docketDocument, tagId);
-            if (success) {
-                return res.status(HttpStatus.OK).json(APIResponse.successResponse(HttpStatus.OK));
-            }
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
+            await this.docketService.markDocketWithTag(docketDocument, tagId);
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse(HttpStatus.OK));
         }
         return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST))
     }
@@ -158,11 +152,8 @@ export class DocketController {
             if (!docketDocument) {
                 return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.successResponse(HttpStatus.NOT_FOUND));
             }
-            const success = await this.docketService.unmarkDocketWithTag(docketDocument, tagId);
-            if (success) {
-                return res.status(HttpStatus.OK).json(APIResponse.successResponse(HttpStatus.OK));
-            }
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
+            await this.docketService.unmarkDocketWithTag(docketDocument, tagId);
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse(HttpStatus.OK));
         }
         return res.status(HttpStatus.BAD_REQUEST).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST))
 

@@ -29,7 +29,7 @@ export class AuthController {
 
     @Post("/app/register")
     public async registerAppUser(@Res() res, @Body() createUserDto: CreateAppUserDto): Promise<any> {
-        const userExists = await this.userService.getUserByUsernameIfExists(createUserDto.username)
+        const userExists = await this.userService.findByUsername(createUserDto.username)
         if (userExists) {
             return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST, "User with Given Mail already exists"));
         } else {
@@ -52,7 +52,7 @@ export class AuthController {
 
     @Post("/b2b/register")
     public async registerB2bUser(@Res() res, @Body() createUserDto: CreateB2BUserDto): Promise<any> {
-        const userExists = await this.userService.getUserByUsernameIfExists(createUserDto.username)
+        const userExists = await this.userService.findByUsername(createUserDto.username)
         if (userExists) {
             return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.BAD_REQUEST, "User with Given Mail already exists"));
         } else {
@@ -77,7 +77,7 @@ export class AuthController {
     @Post('/login')
     public async login(@Res() res, @Body() loginDto: LoginUserDto): Promise<APIResponse> {
         this.logger.log("**Login Request**")
-        const userDocument = await this.userService.getUserByUsernameIfExists(loginDto.username)
+        const userDocument = await this.userService.findByUsername(loginDto.username)
         if (!userDocument) {
             return res.status(HttpStatus.UNAUTHORIZED).json(APIResponse.errorResponse(HttpStatus.UNAUTHORIZED));
         }
@@ -102,9 +102,10 @@ export class AuthController {
         if (await this.userService.isUserActive(userDocument._id)) {
             return res.status(HttpStatus.OK).json(APIResponse.successResponse({message: "Given Mail already confirmed!"}));
         } else {
-            const success = await this.authService.verifyAccount(userID, code);
+            const success = await this.mailVerificationService.verifyMailVerification(userID, code);
             if (success) {
-                return res.status(HttpStatus.OK).json(APIResponse.successResponse(null));
+                await this.userService.activateUser(userID);
+                return res.status(HttpStatus.OK).json(APIResponse.successResponse("Mail confirmed! Account successfully activated."));
             } else {
                 return res.status(HttpStatus.OK).json(APIResponse.errorResponse(500));
             }

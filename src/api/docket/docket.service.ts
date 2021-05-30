@@ -10,14 +10,11 @@ export class DocketService {
 
     constructor(@InjectModel('Dockets') private  docketModel: Model<DocketDocument>,
                 @InjectModel('Users') private  userModel: Model<UserDocument>,
-    ) {
-
-    }
+    ) {}
 
     async deleteById(docketId: string): Promise<boolean> {
         const result = await this.docketModel.findByIdAndDelete(docketId).exec();
         return !!result;
-
     }
 
     async findById(docketId: string): Promise<DocketDocument | null> {
@@ -32,37 +29,21 @@ export class DocketService {
         return await this.docketModel.find({tags: tagId}).exec();
     }
 
-    async markDocketWithTag(docketDocument: DocketDocument, tagId: string): Promise<boolean> {
-        const newlyTaggedDocket = this.addTag(docketDocument, tagId);
-        await newlyTaggedDocket.save()
-        const updatedDocketDocument = await this.findById(docketDocument._id);
-        return updatedDocketDocument.tags.includes(tagId);
-
-    }
-
-    async unmarkDocketWithTag(docketDocument: DocketDocument, tagId: string): Promise<boolean> {
-        const docketWithRemovedTag = this.removeTag(docketDocument, tagId);
-        await docketWithRemovedTag.save()
-        const updatedDocketDocument = await this.findById(docketDocument._id);
-        return !updatedDocketDocument.tags.includes(tagId);
-
-    }
-
-    removeTag(docket: DocketDocument, tagId: string): DocketDocument {
-        const index = docket.tags.indexOf(tagId, 0)
-        if (index > -1) {
-            docket.tags.splice(index, 1);
-        }
-        return docket
-    }
-
-    addTag(docket: DocketDocument, tagId: string): DocketDocument {
-        if (docket.tags.includes(tagId)) {
-            return docket;
+    async markDocketWithTag(docketDocument: DocketDocument, tagId: string): Promise<void> {
+        if (docketDocument.tags.includes(tagId)) {
         } else {
-            docket.tags.push(tagId)
+            docketDocument.tags.push(tagId)
+            await docketDocument.save()
         }
-        return docket
+    }
+
+    async unmarkDocketWithTag(docketDocument: DocketDocument, tagId: string): Promise<void> {
+        const index = docketDocument.tags.indexOf(tagId, 0)
+        if (index > -1) {
+            docketDocument.tags.splice(index, 1);
+            await docketDocument.save()
+        }
+
     }
 
     async create(receiverId: string, senderId: string, docketFile: DocketFile): Promise<DocketDocument | null> {

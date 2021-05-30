@@ -1,22 +1,24 @@
-import {Test, TestingModule} from "@nestjs/testing";
+import {Test} from "@nestjs/testing";
 import {MongooseModule} from "@nestjs/mongoose";
 import {APP_DI_CONFIG, DATABASE_URL_TEST} from "../app.module";
 import {DocketModule} from "../api/docket/docket.module";
 import {AuthModule} from "../auth/auth.module";
-import {HttpModule, INestApplication, ValidationPipe} from "@nestjs/common";
+import {HttpModule, ValidationPipe} from "@nestjs/common";
 import {AppController} from "../app.controller";
 import {AppService} from "../app.service";
 import {MailService} from "../common/mail.service";
 import registerCodeMock, {
     codeGeneratorServiceMock,
     createAppUserDto,
-    createB2BUserDto, loginAppDto, loginB2BDto,
+    createB2BUserDto,
+    loginAppDto,
+    loginB2BDto,
     mailServiceMock,
 } from "./mocks/auth.mocks";
 import {CodeGeneratorService} from "../auth/code-generator.service";
 import {MongoClient} from "mongodb";
 import * as request from "supertest";
-import createTagDto from "./mocks/tag.mocks";
+import {CreateTagDto, RenameTagDto} from "../dto/tag.dto";
 
 export class TestHelper {
     private _B2bUserId;
@@ -108,7 +110,7 @@ export class TestHelper {
             .then(res => {
                 const body = res.body;
                 expect(body.success).toBeTruthy();
-                expect(body.data).toBeNull();
+                expect(body.data).toBe("Mail confirmed! Account successfully activated.");
                 expect(body.statusCode).toBe(200);
             })
     }
@@ -131,22 +133,36 @@ export class TestHelper {
             .then(res => {
                 const body = res.body;
                 expect(body.success).toBeTruthy();
-                expect(body.data).toBeNull();
+                expect(body.data).toBe("Mail confirmed! Account successfully activated.");
                 expect(body.statusCode).toBe(200);
             })
 
 
     }
+    async getAppUser() {
+        const url = '/auth/profile'
+        const res = await request(this.app.getHttpServer())
+            .get(url)
+            .set('Authorization', 'bearer ' + this.appJwtToken)
+            .send()
+        return res.body
+    }
+    async getB2BUser() {
+        const url = '/auth/profile'
+        const res = await request(this.app.getHttpServer())
+            .get(url)
+            .set('Authorization', 'bearer ' + this.b2bJwtToken)
+            .send()
+        return res.body
+    }
 
-    async createTag(): Promise<void> {
+    async createTag(tagName: string): Promise<any> {
 
         const res = await request(this.app.getHttpServer())
             .post('/tag')
             .set('Authorization', 'bearer ' + this.appJwtToken)
-            .send(createTagDto)
-            .expect(200)
-        const response = res.body;
-        this._tagId = response.data;
+            .send(new CreateTagDto(tagName))
+        return res.body
 
     }
 
@@ -167,4 +183,42 @@ export class TestHelper {
     }
 
 
+
+
+    async getTag(tagId: string) {
+        const url = '/tag/' + tagId;
+        const res = await request(this.app.getHttpServer())
+            .get(url)
+            .set('Authorization', 'bearer ' + this.appJwtToken)
+            .send()
+        return res.body
+    }
+
+    async renameTag(tagId: string, newTagName: string) {
+        const url = '/tag/' + tagId;
+        const res = await request(this.app.getHttpServer())
+            .put(url)
+            .set('Authorization', 'bearer ' + this.appJwtToken)
+            .send(new RenameTagDto(newTagName))
+        return res.body
+    }
+
+    async getAllTagsByUser() {
+        const url = '/tag';
+        const res = await request(this.app.getHttpServer())
+            .get(url)
+            .set('Authorization', 'bearer ' + this.appJwtToken)
+            .send()
+        return res.body
+
+    }
+
+    async deleteTag(tagId) {
+        const url = '/tag/' + tagId;
+        const res = await request(this.app.getHttpServer())
+            .delete(url)
+            .set('Authorization', 'bearer ' + this.appJwtToken)
+            .send()
+        return res.body
+    }
 }

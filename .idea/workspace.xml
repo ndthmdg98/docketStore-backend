@@ -5,23 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="71ca643a-a5b3-47a2-91e6-ee37d5dabe30" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/utils/TestHelper.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/mocks/tag.mocks.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/tag.e2e-spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/docket/docket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/docket/tag/tag.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/tag/tag.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/docket/tag/tag.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/tag/tag.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/auth.dto.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/auth.dto.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/docket-file.schema.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/docket.schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/docket.schema.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/mocks/auth.mocks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/mocks/auth.mocks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/mail-verification.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/mail-verification.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/TestHelper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/TestHelper.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/auth.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/auth.e2e-spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/docket.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/docket.e2e-spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/tag.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/tag.e2e-spec.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +82,7 @@
       <recent name="$PROJECT_DIR$/src/api/docket/tag" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.docketStore-backend">
+  <component name="RunManager" selected="Jest.Tag API endpoints testing (e2e)">
     <configuration name="API Endpoints Testing (E2)q" type="JavaScriptTestRunnerJest">
       <config-file value="$PROJECT_DIR$/test/jest-e2e.json" />
       <node-interpreter value="project" />
@@ -156,6 +149,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Tag API endpoints testing (e2e)" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <config-file value="$PROJECT_DIR$/test/jest-e2e.json" />
       <node-interpreter value="project" />
       <node-options value="" />
       <jest-package value="$PROJECT_DIR$/node_modules/jest" />
@@ -246,10 +240,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Jest.Docket API endpoints testing (e2e).should return a marked docket" />
         <item itemvalue="Jest.Tag API endpoints testing (e2e)" />
-        <item itemvalue="Jest.Auth API endpoints testing (e2e)" />
         <item itemvalue="Jest.Tag API endpoints testing (e2e).should create an tag" />
+        <item itemvalue="Jest.Docket API endpoints testing (e2e).should return a marked docket" />
+        <item itemvalue="Jest.Auth API endpoints testing (e2e)" />
         <item itemvalue="Jest.Docket API endpoints testing (e2e).should import a docket to the authorized (app) user" />
       </list>
     </recent_temporary>
@@ -288,7 +282,7 @@
       <workItem from="1622214337318" duration="5000" />
       <workItem from="1622214354927" duration="6033000" />
       <workItem from="1622234118536" duration="1354000" />
-      <workItem from="1622235486568" duration="8691000" />
+      <workItem from="1622235486568" duration="16582000" />
     </task>
     <servers />
   </component>
@@ -311,21 +305,9 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/api/docket/docket.service.ts</url>
-          <line>89</line>
+          <line>70</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="79" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/test/tag.e2e-spec.ts</url>
-          <line>24</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="110" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/test/tag.e2e-spec.ts</url>
-          <line>29</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="111" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/test/docket.e2e-spec.ts</url>
@@ -343,6 +325,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/docketStore_backend$Tag_API_endpoints_testing__e2e_.info" NAME="Tag API endpoints testing (e2e) Coverage Results" MODIFIED="1622368739397" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/docketStore_backend$_POST_auth_controller.info" NAME="auth.controller.e2e-spec.ts Coverage Results" MODIFIED="1621604575885" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/docketStore_backend$Auth_Controller_should_register_a_user_.info" NAME="Auth Controller.should register a user  Coverage Results" MODIFIED="1621556852024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>

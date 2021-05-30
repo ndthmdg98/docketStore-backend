@@ -77,7 +77,7 @@ describe('Auth API endpoints testing (e2e)', () => {
             .then(res => {
                 const body = res.body;
                 expect(body.success).toBeTruthy();
-                expect(body.data).toBeNull();
+                expect(body.data).toBe("Mail confirmed! Account successfully activated.");
                 expect(body.statusCode).toBe(200);
             })
 
@@ -91,7 +91,7 @@ describe('Auth API endpoints testing (e2e)', () => {
             .then(res => {
                 const body = res.body;
                 expect(body.success).toBeTruthy();
-                expect(body.data).toBeNull();
+                expect(body.data).toBe("Mail confirmed! Account successfully activated.");
                 expect(body.statusCode).toBe(200);
             })
 

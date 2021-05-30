@@ -14,11 +14,13 @@ export class MailVerificationService {
                 private readonly codeGeneratorService: CodeGeneratorService) {
     }
 
-
     async findOne(options: Object): Promise<MailDocument> {
         return await this.mailModel.findOne(options).exec();
     }
 
+    async findByUserId(userId: string): Promise<MailDocument> {
+        return await this.mailModel.findOne({receiverId: userId}).exec();
+    }
 
     async create(userId: string): Promise<any> {
         const mailVerificationDto = new MailVerificationDto(userId, this.codeGeneratorService.generateCode(10));
@@ -32,6 +34,14 @@ export class MailVerificationService {
         }
     }
 
-
+    async verifyMailVerification(userId: string, code: string): Promise<boolean> {
+        //return await this.userService.activateUser(userId);
+        const mailVerification = await this.findByUserId(userId);
+        if (mailVerification) {
+            return mailVerification.receiverId === userId && mailVerification.code === code;
+        } else {
+            return false;
+        }
+    }
 
 }

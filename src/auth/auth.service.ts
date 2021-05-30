@@ -22,18 +22,7 @@ export class AuthService {
 
 
 
-    async verifyAccount(userId: string, code: string): Promise<boolean> {
-        const mailVerification = await this.mailService.findOne({receiverId: userId});
-        if (mailVerification) {
-            if (mailVerification.receiverId === userId && mailVerification.code === code) {
-                return await this.userService.activateUser(userId);
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
+
 
     createToken(jwtPayloadInterface: JwtPayloadInterface): IToken {
         const expiresIn = 3600;

@@ -13,7 +13,7 @@ describe('Docket API endpoints testing (e2e)', () => {
         await testHelper.createAndActivateB2BUser();
         await testHelper.loginAppUser();
         await testHelper.loginB2BUser();
-        await testHelper.createTag()
+        await testHelper.createTag("Archiv")
 
     });
 
