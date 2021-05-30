@@ -165,7 +165,7 @@ export class DocketController {
     async deleteById(@Req() req, @Res() res, @Param('id') id: string): Promise<Docket | null> {
         const success = await this.docketService.deleteById(id);
         if (success) {
-            return res.status(HttpStatus.OK).json(APIResponse.successResponse({}));
+            return res.status(HttpStatus.OK).json(APIResponse.successResponse());
         }
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
     }

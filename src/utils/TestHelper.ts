@@ -221,4 +221,22 @@ export class TestHelper {
             .send()
         return res.body
     }
+
+    async deleteDocket(docketId: string) {
+        const url = '/docket/' + docketId;
+        const res = await request(this.app.getHttpServer())
+            .delete(url)
+            .set('Authorization', 'bearer ' + this.appJwtToken)
+            .send()
+        return res.body
+    }
+
+    async getDocket(docketId: string) {
+        const url = '/docket/' + docketId;
+        const res = await request(this.app.getHttpServer())
+            .get(url)
+            .set('Authorization', 'bearer ' + this.appJwtToken)
+            .send()
+        return res.body
+    }
 }

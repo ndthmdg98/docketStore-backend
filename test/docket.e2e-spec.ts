@@ -5,6 +5,7 @@ import {TestHelper} from "../src/utils/TestHelper";
 describe('Docket API endpoints testing (e2e)', () => {
     let testHelper: TestHelper;
     let docketId = "";
+    let tagId = ""
     beforeAll(async () => {
         testHelper = new TestHelper();
         await testHelper.createTestingModule();
@@ -13,7 +14,8 @@ describe('Docket API endpoints testing (e2e)', () => {
         await testHelper.createAndActivateB2BUser();
         await testHelper.loginAppUser();
         await testHelper.loginB2BUser();
-        await testHelper.createTag("Archiv")
+        const body = await testHelper.createTag("Archiv")
+        tagId = body.data
 
     });
 
@@ -70,7 +72,7 @@ describe('Docket API endpoints testing (e2e)', () => {
 
     it(`should mark a docket with a tag`, async () => {
 
-        const docketUrl = '/docket/' + docketId + '/mark/' + testHelper.tagId
+        const docketUrl = '/docket/' + docketId + '/mark/' + tagId
         const res = await request(testHelper.app.getHttpServer())
             .put(docketUrl)
             .set('Authorization', 'bearer ' + testHelper.appJwtToken)
@@ -101,7 +103,7 @@ describe('Docket API endpoints testing (e2e)', () => {
 
     it(`should unmark a docket with a tag`, async () => {
 
-        const docketUrl = '/docket/' + docketId + '/unmark/' + testHelper.tagId
+        const docketUrl = '/docket/' + docketId + '/unmark/' + tagId
         const res = await request(testHelper.app.getHttpServer())
             .put(docketUrl)
             .set('Authorization', 'bearer ' + testHelper.appJwtToken)
@@ -188,6 +190,18 @@ describe('Docket API endpoints testing (e2e)', () => {
         const response = res.body;
         expect(response.error).toBe("Forbidden")
         expect(response.statusCode).toBe(403)
+
+    });
+
+    it(`should delete a docket`, async () => {
+        const body = await testHelper.deleteDocket(docketId)
+        expect(body.statusCode).toBe(200)
+        expect(body.success).toBeTruthy()
+        expect(body.data).toBeUndefined()
+        const getTagBody = await testHelper.getDocket(docketId);
+        expect(getTagBody.statusCode).toBe(404)
+        expect(getTagBody.success).toBeFalsy()
+        expect(getTagBody.data).toBeUndefined()
 
     });
 
