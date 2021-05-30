@@ -25,7 +25,6 @@ describe('Docket API endpoints testing (e2e)', () => {
 
     it(`should import a docket to the authorized (app) user`, async () => {
 
-        const file = fs.readFileSync("files/Dein REWE eBon vom 15.04.2021.pdf")
         const res = await request(testHelper.app.getHttpServer())
             .post('/docket/import/')
             .set('Authorization', 'bearer ' + testHelper.appJwtToken)
