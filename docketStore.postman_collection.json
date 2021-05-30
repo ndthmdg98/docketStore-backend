@@ -1,0 +1,709 @@
+{
+	"info": {
+		"_postman_id": "38a05623-a488-475a-9e3f-07a6fe91f36a",
+		"name": "docketStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "docket",
+			"item": [
+				{
+					"name": "tag",
+					"item": [
+						{
+							"name": "Create Tag",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYjBmZGM5Y2JiY2RlY2M1Yzk5NGM5ZSIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjIyMTIxODMsImV4cCI6MTYyMjIxNTc4M30.dbDgiFDutEV-b8POdv_Z7iyEaVsb7_Zf-zssrIz8uog",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"tagName\": \"New Tag\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/tag/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"tag",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Tag",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNTRlMjEyOTM4Mzg1MTFkYTEzNDlhNyIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdG5hbWUiOiJOaWNvIiwibGFzdG5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MTYxNzU2NTgsImV4cCI6MTYxNjE3OTI1OH0.JFYjqB-yAnrizaDrN0AiIxbc6t-fEqg5utTt21C3jDE",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"tagName\": \"Updated Tag\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/tag/6054e2edfbc11f12052f6bb6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"tag",
+										"6054e2edfbc11f12052f6bb6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Tag",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNTRlMjEyOTM4Mzg1MTFkYTEzNDlhNyIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdG5hbWUiOiJOaWNvIiwibGFzdG5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MTYxNzU2NTgsImV4cCI6MTYxNjE3OTI1OH0.JFYjqB-yAnrizaDrN0AiIxbc6t-fEqg5utTt21C3jDE",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"tagName\": \"Updated Tag\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/tag/6054e2edfbc11f12052f6bb6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"tag",
+										"6054e2edfbc11f12052f6bb6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Tags From User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYTY1Mjk1ZDY0MDhhNjMyOTU5NGMyYiIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjE1MTMxMTUsImV4cCI6MTYyMTUxNjcxNX0.Olp2fJ1IYX8FfqzR47B3gqYIyM5ABi1zBlslQ3V-6FQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/tag/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"tag",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Tag By Id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWQ3YjEwNjMwMzc5N2I1ZTI1MjZkYSIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjA5MzM0MjksImV4cCI6MTYyMDkzNzAyOX0.780P41c9XfYI3Tf_oPJdDmsDwPDMPZT_hYl3XgNXJWw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/tag/609d7c8d9edfed7bb5954355",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"tag",
+										"609d7c8d9edfed7bb5954355"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Import Docket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYTY1Mjk1ZDY0MDhhNjMyOTU5NGMyYiIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjE1MTMxMTUsImV4cCI6MTYyMTUxNjcxNX0.Olp2fJ1IYX8FfqzR47B3gqYIyM5ABi1zBlslQ3V-6FQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "receiverId",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/nicodiefenbacher/Downloads/Dein REWE eBon vom 15.04.2021.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/docket/import",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								"import"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Docket From B2B User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYjM3ZjU4ZjQ3YTNjMWMxYjIzZDAyZiIsInVzZXJuYW1lIjoic2VydmljZUBuZGZuYi5kZSIsImZpcnN0TmFtZSI6Ik5pY28iLCJsYXN0TmFtZSI6IkRpZWZlbmJhY2hlciIsImlhdCI6MTYyMjM3NjMyMSwiZXhwIjoxNjIyMzc5OTIxfQ.kRSRW9BWKRq_yE3RZ3ITd3_mTsAOLIJTATxuX9RbUz4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/nicodiefenbacher/Downloads/Dein REWE eBon vom 07.05.2021.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/docket/create/60b37dcbd0aeb21bc96cc2dc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								"create",
+								"60b37dcbd0aeb21bc96cc2dc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Docket By Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWMzZWJkZmQ0ZTA3NjQ4NzEyODI5NiIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjA4NTI1ODIsImV4cCI6MTYyMDg1NjE4Mn0.Sar4pkcOjwEyDS0HGAfnJyN7HiZs0hTvShZhwgQVCWI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/pdf",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/docket/609c3f18fd4e0764871282ac",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								"609c3f18fd4e0764871282ac"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get DocketFile By Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWMzZWJkZmQ0ZTA3NjQ4NzEyODI5NiIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjA4NTI1ODIsImV4cCI6MTYyMDg1NjE4Mn0.Sar4pkcOjwEyDS0HGAfnJyN7HiZs0hTvShZhwgQVCWI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/pdf",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/docket/609c3f18fd4e0764871282ac",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								"609c3f18fd4e0764871282ac"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Dockets From User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWMzZWJkZmQ0ZTA3NjQ4NzEyODI5NiIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjA5Mjg5MzMsImV4cCI6MTYyMDkzMjUzM30.ANzyuM6QDsOec--Lw3smPQ49aIDV1kWtToZ1EAS9g0M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/docket/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Docket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWMzZWJkZmQ0ZTA3NjQ4NzEyODI5NiIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjA4NTQ5MzAsImV4cCI6MTYyMDg1ODUzMH0.5Tq61PzIaIQu-d1fd7h-FrWEmBV1uAc-aJC5n_O7HIQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/docket/609c48a3462607654b110e7d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								"609c48a3462607654b110e7d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Filterd Dockets By Tag",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWMzZWJkZmQ0ZTA3NjQ4NzEyODI5NiIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjA5MjUxNDUsImV4cCI6MTYyMDkyODc0NX0.xf12FWcNDL2Tfo912bjB7mrIALDCjkglZYTE0-OUnUw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/docket/tag/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								"tag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Docket with Tag",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWMzZWJkZmQ0ZTA3NjQ4NzEyODI5NiIsInVzZXJuYW1lIjoibmljb2RpZWZlbmJhY2hlckB3ZWIuZGUiLCJmaXJzdE5hbWUiOiJOaWNvIiwibGFzdE5hbWUiOiJEaWVmZW5iYWNoZXIiLCJpYXQiOjE2MjA5Mjg5MzMsImV4cCI6MTYyMDkzMjUzM30.ANzyuM6QDsOec--Lw3smPQ49aIDV1kWtToZ1EAS9g0M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/docket/609d70c9905bf27810faf570/mark/609c3ec5fd4e07648712829b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								"609d70c9905bf27810faf570",
+								"mark",
+								"609c3ec5fd4e07648712829b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unmark Docket with Tag",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/docket/609c3f18fd4e0764871282ac/unmark/609c3ec5fd4e07648712829b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"docket",
+								"609c3f18fd4e0764871282ac",
+								"unmark",
+								"609c3ec5fd4e07648712829b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login App Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"nicodiefenbacher@web.de\",\n    \"password\": \"G41mes2l624320\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create B2B Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"service@ndfnb.de\",\n    \"password\": \"passwort123\",\n    \"firstName\": \"Nico\",\n    \"lastName\": \"Diefenbacher\",\n    \"phoneNumber\": \"015904379121\",\n    \"contactEmail\": \"service@ndfnb.de\",\n    \"companyName\": \"companyName\",\n    \"category\": \"Service Provider\",\n    \"ustid\": \"DE200209232\",\n    \"street\": \"Hauptstraße\",\n    \"housenumber\": \"111\",\n    \"zipcode\": \"11111\",\n    \"city\": \"Karlsruhe\",\n    \"country\": \"Deutschland\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/b2b/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"b2b",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create App Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"nicodiefenbacher@web.de\",\n    \"password\": \"passwort123\",\n    \"firstName\": \"Nico\",\n    \"lastName\": \"Diefenbacher\",\n    \"phoneNumber\": \"015904379121\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/app/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"app",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login B2B Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"service@ndfnb.de\",\n    \"password\": \"passwort123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/auth/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
