@@ -28,6 +28,12 @@ export class TestHelper {
     private _b2bJwtToken;
     private _docketId;
     private _app;
+    private _databaseUrl;
+    private _databaseName;
+    constructor(databaseName: string) {
+        this._databaseUrl = "mongodb://localhost/" + databaseName;
+        this._databaseName =  databaseName;
+    }
 
     get app() {
         return this._app;
@@ -60,7 +66,7 @@ export class TestHelper {
     async createTestingModule() {
         const moduleFixture = await Test.createTestingModule({
             imports: [
-                MongooseModule.forRoot(DATABASE_URL_TEST),
+                MongooseModule.forRoot(this._databaseUrl),
                 DocketModule,
                 AuthModule,
                 HttpModule
@@ -91,7 +97,7 @@ export class TestHelper {
         connection = await MongoClient.connect("mongodb://localhost", {
             useNewUrlParser: true,
         });
-        db = await connection.db("docketstore_test");
+        db = await connection.db(this._databaseName);
         await db.dropDatabase()
     }
 

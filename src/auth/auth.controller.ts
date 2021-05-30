@@ -35,15 +35,17 @@ export class AuthController {
         } else {
             const user = await this.userService.createUser(createUserDto);
             if (user) {
-                const mailVerification = await this.mailVerificationService.create(user._id);
-                if (mailVerification) {
-                    const sentMail = await this.mailService.sendWelcomeEmail(user._id, user.username, user.firstName, mailVerification.code);
-                    if (sentMail) {
-                        return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
-                    }
-                } else {
-                    return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
-                }
+                return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
+                //TODO Dies ist für die Mailbestätigung notwendig
+                //const mailVerification = await this.mailVerificationService.create(user._id);
+                // if (mailVerification) {
+                //     const sentMail = await this.mailService.sendWelcomeEmail(user._id, user.username, user.firstName, mailVerification.code);
+                //     if (sentMail) {
+                //         return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
+                //     }
+                // } else {
+                //     return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
+                // }
             } else {
                 return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
             }
@@ -58,7 +60,9 @@ export class AuthController {
         } else {
             const user = await this.userService.createUser(createUserDto);
             if (user) {
-                const mailVerification = await this.mailVerificationService.create(user._id);
+                return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
+                //TODO Dies ist für die Mailbestätigung notwendig
+               /* const mailVerification = await this.mailVerificationService.create(user._id);
                 if (mailVerification) {
                     const sentMail = await this.mailService.sendWelcomeEmail(user._id, user.username, user.firstName, mailVerification.code);
                     if (sentMail) {
@@ -66,7 +70,7 @@ export class AuthController {
                     }
                 } else {
                     return res.status(HttpStatus.OK).json(APIResponse.successResponse(user._id))
-                }
+                }*/
             } else {
                 return res.status(HttpStatus.OK).json(APIResponse.errorResponse(HttpStatus.INTERNAL_SERVER_ERROR));
             }

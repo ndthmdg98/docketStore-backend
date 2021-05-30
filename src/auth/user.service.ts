@@ -39,7 +39,9 @@ export class UserService {
                     phoneNumber: userToCreate.phoneNumber,
                     contactEmail: userToCreate.contactEmail,
                     company: company,
-                    status: "pending",
+                    //TODO pending for mail confirmation
+                   //status: "pending",
+                    status: "active",
                     roles: ['b2b_user'],
                     lastLogin: new Date()
                 }), userToCreate.password);
@@ -52,7 +54,9 @@ export class UserService {
                     lastName: userToCreate.lastName,
                     phoneNumber: userToCreate.phoneNumber,
                     company: null,
-                    status: "pending",
+                    //TODO pending for mail confirmation
+                    //status: "pending",
+                    status: "active",
                     roles: ['app_user'],
                     // @ts-ignore
                     lastLogin: new Date()

@@ -7,7 +7,7 @@ describe('Docket API endpoints testing (e2e)', () => {
     let docketId = "";
     let tagId = ""
     beforeAll(async () => {
-        testHelper = new TestHelper();
+        testHelper = new TestHelper("docketstore_test_docket");
         await testHelper.createTestingModule();
         await testHelper.dropTestDatabase();
         await testHelper.createAndActivateAppUser();

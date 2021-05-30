@@ -18,7 +18,7 @@ describe('Auth API endpoints testing (e2e)', () => {
 
     let testHelper: TestHelper;
     beforeAll(async () => {
-        testHelper = new TestHelper();
+        testHelper = new TestHelper("docketstore_test_auth");
         await testHelper.createTestingModule();
         await testHelper.dropTestDatabase();
     });

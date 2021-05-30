@@ -6,9 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="71ca643a-a5b3-47a2-91e6-ee37d5dabe30" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/docket/docket.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/user.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/TestHelper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/TestHelper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/auth.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/auth.e2e-spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/docket.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/docket.e2e-spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/tag.e2e-spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/tag.e2e-spec.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +79,7 @@
       <recent name="$PROJECT_DIR$/src/api/docket/tag" />
     </key>
   </component>
-  <component name="RunManager" selected="Jest.docket.e2e-spec.ts">
+  <component name="RunManager" selected="npm.docketStore-backend">
     <configuration name="API Endpoints Testing (E2)q" type="JavaScriptTestRunnerJest">
       <config-file value="$PROJECT_DIR$/test/jest-e2e.json" />
       <node-interpreter value="project" />
@@ -235,9 +238,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Jest.Tag API endpoints testing (e2e)" />
+        <item itemvalue="Jest.Auth API endpoints testing (e2e)" />
         <item itemvalue="Jest.Tag API endpoints testing (e2e).should create an tag" />
         <item itemvalue="Jest.Docket API endpoints testing (e2e).should return a marked docket" />
-        <item itemvalue="Jest.Auth API endpoints testing (e2e)" />
         <item itemvalue="Jest.Docket API endpoints testing (e2e).should import a docket to the authorized (app) user" />
       </list>
     </recent_temporary>
@@ -276,7 +279,7 @@
       <workItem from="1622214337318" duration="5000" />
       <workItem from="1622214354927" duration="6033000" />
       <workItem from="1622234118536" duration="1354000" />
-      <workItem from="1622235486568" duration="18320000" />
+      <workItem from="1622235486568" duration="20782000" />
     </task>
     <servers />
   </component>
@@ -325,7 +328,12 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/docketStore_backend$Tag_API_endpoints_testing__e2e_.info" NAME="Tag API endpoints testing (e2e) Coverage Results" MODIFIED="1622368739397" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/docketStore_backend$docket_e2e_spec_ts.info" NAME="docket.e2e-spec.ts Coverage Results" MODIFIED="1622375304659" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/docketStore_backend$auth_e2e_spec_ts.info" NAME="auth.e2e-spec.ts Coverage Results" MODIFIED="1622374914647" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/docketStore_backend$API_Endpoints_Testing__E2_q.info" NAME="API Endpoints Testing (E2)q Coverage Results" MODIFIED="1622375078796" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/docketStore_backend$Auth_API_endpoints_testing__e2e_.info" NAME="Auth API endpoints testing (e2e) Coverage Results" MODIFIED="1622375110895" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/docketStore_backend$Docket_API_endpoints_testing__e2e_.info" NAME="Docket API endpoints testing (e2e) Coverage Results" MODIFIED="1622375271618" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/docketStore_backend$Tag_API_endpoints_testing__e2e_.info" NAME="Tag API endpoints testing (e2e) Coverage Results" MODIFIED="1622375250229" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/docketStore_backend$_POST_auth_controller.info" NAME="auth.controller.e2e-spec.ts Coverage Results" MODIFIED="1621604575885" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/docketStore_backend$Auth_Controller_should_register_a_user_.info" NAME="Auth Controller.should register a user  Coverage Results" MODIFIED="1621556852024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="JestJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
