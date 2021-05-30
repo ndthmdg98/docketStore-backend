@@ -6,6 +6,7 @@ describe('Docket API endpoints testing (e2e)', () => {
     let testHelper: TestHelper;
     let docketId = "";
     let tagId = ""
+    const file = fs.readFileSync("files/Dein REWE eBon vom 15.04.2021.pdf")
     beforeAll(async () => {
         testHelper = new TestHelper("docketstore_test_docket");
         await testHelper.createTestingModule();
@@ -22,7 +23,7 @@ describe('Docket API endpoints testing (e2e)', () => {
 
     it(`should import a docket to the authorized (app) user`, async () => {
 
-        const file = fs.readFileSync("/Users/nicodiefenbacher/WebstormProjects/docketStore/docketStore-backend/test/files/Dein REWE eBon vom 15.04.2021.pdf")
+        const file = fs.readFileSync("files/Dein REWE eBon vom 15.04.2021.pdf")
         const res = await request(testHelper.app.getHttpServer())
             .post('/docket/import/')
             .set('Authorization', 'bearer ' + testHelper.appJwtToken)
@@ -53,7 +54,7 @@ describe('Docket API endpoints testing (e2e)', () => {
 
     it(`should import a docket to a authorized user`, async () => {
 
-        const file = fs.readFileSync("/Users/nicodiefenbacher/WebstormProjects/docketStore/docketStore-backend/test/files/Dein REWE eBon vom 15.04.2021.pdf")
+
 
         const res = await request(testHelper.app.getHttpServer())
             .post('/docket/import')
