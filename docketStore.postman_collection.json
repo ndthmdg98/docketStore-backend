@@ -572,7 +572,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"nicodiefenbacher@web.de\",\n    \"password\": \"G41mes2l624320\"\n}",
+							"raw": "{\n    \"username\": \"nicodiefenbacher@web.de\",\n    \"password\": \"passwort123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
