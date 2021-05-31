@@ -4,12 +4,13 @@ import {Model} from "mongoose";
 import {DocketDocument, DocketFile} from "../../model/docket.schema";
 import {UserDocument} from "../../model/user.schema";
 import {Readable} from "stream";
+import {UserService} from "../../auth/user.service";
 
 @Injectable()
 export class DocketService {
 
     constructor(@InjectModel('Dockets') private  docketModel: Model<DocketDocument>,
-                @InjectModel('Users') private  userModel: Model<UserDocument>,
+                private userService: UserService
     ) {}
 
     async deleteById(docketId: string): Promise<boolean> {
@@ -47,7 +48,7 @@ export class DocketService {
     }
 
     async create(receiverId: string, senderId: string, docketFile: DocketFile): Promise<DocketDocument | null> {
-        const receiver = await this.userModel.findById(receiverId);
+        const receiver = await this.userService.findById(receiverId);
         if (!receiver) {
             return null;
         }

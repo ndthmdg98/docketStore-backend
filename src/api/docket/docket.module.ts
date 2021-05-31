@@ -7,6 +7,7 @@ import {DocketController} from "./docket.controller";
 import {TagService} from "./tag/tag.service";
 import {TagController} from "./tag/tag.controller";
 import {UserSchema} from "../../model/user.schema";
+import {UserService} from "../../auth/user.service";
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import {UserSchema} from "../../model/user.schema";
         MongooseModule.forFeature([{ name: 'Users', schema: UserSchema }]),
     ],
     controllers: [DocketController, TagController],
-    providers: [DocketService, TagService],
+    providers: [DocketService, TagService, UserService],
     exports: [DocketService, TagService],
 })
 export class DocketModule {}
