@@ -3,14 +3,14 @@
 </p>
 
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
+## Environment
+```
+ Ubuntu 64-Bit 20.04
+```
 ## Installation
 
 ```
-execute the install script
+Installationsskript ausführen
 ```
 
 ## Running the app
@@ -26,5 +26,5 @@ $ npm run start
 $ npm run test:e2e
 ```
 
-## Support
+
 
